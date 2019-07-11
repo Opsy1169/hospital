@@ -12,6 +12,9 @@ public class Prescription {
     private int validityInDays;
     private Patient patient;
     private Doctor doctor;
+    private Priority priority;
+
+
 
     @Id
     @Column(name = "id")
@@ -69,6 +72,16 @@ public class Prescription {
 
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
+    }
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "priority")
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     @Override
