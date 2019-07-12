@@ -14,9 +14,10 @@ public class PatientService {
     private static SessionFactory factory = HibernateUtil.getSessionFactory();
     private static Session session = factory.openSession();
 
-    public static void addPatient(Patient patient){
-        Session session = factory.getCurrentSession();
-        session.save(patient);
+    public static Patient addPatient(Patient patient){
+
+        int id = (int) session.save(patient);
+        return getPatientById(id).get(0);
     }
     public static void updatePatient(Patient patient){
         session.update(patient);

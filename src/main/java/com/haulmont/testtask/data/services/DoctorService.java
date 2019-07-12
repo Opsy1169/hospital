@@ -12,9 +12,11 @@ public class DoctorService {
     private static SessionFactory factory = HibernateUtil.getSessionFactory();
     private static Session session = factory.openSession();
 
-    public static void addDoctor (Doctor doctor){
-        Session session = factory.getCurrentSession();
-        session.save(doctor);
+    public static Doctor addDoctor (Doctor doctor){
+//        Session session = factory.getCurrentSession();
+        int id = (int)session.save(doctor);
+        return getDoctorById(id).get(0);
+
     }
     public static void updateDoctor (Doctor Doctor ){
         session.update(Doctor );

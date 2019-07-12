@@ -1,14 +1,17 @@
 package com.haulmont.testtask.entities;
 
+import net.bytebuddy.asm.Advice;
+
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "prescription", schema = "PUBLIC", catalog = "PUBLIC")
 public class Prescription {
     private int id;
     private String description;
-    private Date beginDate;
+    private LocalDate beginDate;
     private int validityInDays;
     private Patient patient;
     private Doctor doctor;
@@ -37,11 +40,11 @@ public class Prescription {
     }
 
     @Column(name = "beg_date")
-    public Date getBeginDate() {
+    public LocalDate getBeginDate() {
         return beginDate;
     }
 
-    public void setBeginDate(Date beginDate) {
+    public void setBeginDate(LocalDate beginDate) {
         this.beginDate = beginDate;
     }
 
