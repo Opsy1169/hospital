@@ -3,6 +3,7 @@ package com.haulmont.testtask.components;
 
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Patient;
+import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -16,7 +17,7 @@ public class PatientComponent extends Composite implements View {
     Button add = new Button("", VaadinIcons.PLUS);
     Button delete = new Button("", VaadinIcons.TRASH);
     Button edit = new Button("", VaadinIcons.EDIT);
-    PatientForm patientForm = new PatientForm();
+    PatientForm patientForm = new PatientForm(this);
     ListDataProvider<Patient> provider = DataProvider.ofCollection(PatientService.getPatients());
 
     public PatientComponent(){
@@ -64,12 +65,28 @@ public class PatientComponent extends Composite implements View {
             if(patient != null){
                 try {
                     PatientService.deletePatient(patient);
-                    provider.refreshAll();
+                    updateList(patient, CrudOperations.DELETE);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    public void updateList(Patient patient, CrudOperations operation){
+        switch (operation){
+            case CREATE:
+                provider.getItems().add(patient);
+                provider.refreshAll();
+                break;
+            case UPDATE:
+                provider.refreshItem(patient);
+                break;
+            case DELETE:
+                provider.getItems().remove(patient);
+                provider.refreshAll();
+                break;
+        }
     }
 
 }

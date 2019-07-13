@@ -17,7 +17,6 @@ public class PrescriptionService {
     private static Session session = factory.openSession();
 
     public static void addPrescription (Prescription prescription){
-        Session session = factory.getCurrentSession();
         session.save(prescription);
     }
     public static void updatePrescription (Prescription prescription ){

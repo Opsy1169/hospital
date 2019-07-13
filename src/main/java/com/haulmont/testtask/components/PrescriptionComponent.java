@@ -4,6 +4,7 @@ package com.haulmont.testtask.components;
 import com.haulmont.testtask.data.services.PrescriptionService;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.entities.Prescription;
+import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -17,8 +18,9 @@ public class PrescriptionComponent extends Composite implements View {
     private Button add = new Button("", VaadinIcons.PLUS);
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
+    ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionService.getPrescriptions());
 
-    PrescriptionForm prescriptionForm = new PrescriptionForm();
+    PrescriptionForm prescriptionForm = new PrescriptionForm(this);
 
     public PrescriptionComponent(){
 
@@ -38,7 +40,6 @@ public class PrescriptionComponent extends Composite implements View {
 
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, prescriptionGrid);
         mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
-        ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionService.getPrescriptions());
         prescriptionGrid.setDataProvider(provider);
         mainContent.setSizeFull();
         prescriptionGrid.setSizeFull();
@@ -60,5 +61,33 @@ public class PrescriptionComponent extends Composite implements View {
                 this.getUI().getUI().addWindow(subWindow);
             }
         });
+
+        delete.addClickListener(event -> {
+            Prescription prescription = prescriptionGrid.asSingleSelect().getValue();
+            if(prescription != null){
+                try {
+                    PrescriptionService.deletePrescription(prescription);
+                    updateList(prescription, CrudOperations.DELETE);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void updateList(Prescription prescription, CrudOperations operation){
+        switch (operation){
+            case CREATE:
+                provider.getItems().add(prescription);
+                provider.refreshAll();
+                break;
+            case UPDATE:
+                provider.refreshItem(prescription);
+                break;
+            case DELETE:
+                provider.getItems().remove(prescription);
+                provider.refreshAll();
+                break;
+        }
     }
 }

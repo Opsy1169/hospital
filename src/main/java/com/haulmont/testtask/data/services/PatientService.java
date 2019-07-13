@@ -20,7 +20,10 @@ public class PatientService {
         return getPatientById(id).get(0);
     }
     public static void updatePatient(Patient patient){
+
+        Transaction transaction = session.beginTransaction();
         session.update(patient);
+        transaction.commit();
     }
 
     public static void deletePatient(Patient patient){

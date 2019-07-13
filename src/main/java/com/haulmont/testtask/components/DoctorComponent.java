@@ -5,6 +5,7 @@ import com.haulmont.testtask.data.services.DoctorService;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Doctor;
 import com.haulmont.testtask.entities.Patient;
+import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -20,7 +21,9 @@ public class DoctorComponent extends Composite implements View {
     private Button edit = new Button("", VaadinIcons.EDIT);
     private Window subWindow = new Window("addEditWindow");
 
-    DoctorForm doctorForm = new DoctorForm();
+    ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorService.getDoctors());
+
+    DoctorForm doctorForm = new DoctorForm(this);
 
     public DoctorComponent(){
 
@@ -41,7 +44,7 @@ public class DoctorComponent extends Composite implements View {
         initButtonListenters();
         mainContent.setSizeFull();
         doctorGrid.setSizeFull();
-        ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorService.getDoctors());
+
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
 
@@ -62,6 +65,34 @@ public class DoctorComponent extends Composite implements View {
                 this.getUI().addWindow(subWindow);
             }
         });
+
+        delete.addClickListener(event -> {
+            Doctor doctor = doctorGrid.asSingleSelect().getValue();
+            if(doctor != null){
+                try {
+                    DoctorService.deleteDoctor(doctor);
+                    updateList(doctor, CrudOperations.DELETE);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void updateList(Doctor doctor, CrudOperations operation){
+        switch (operation){
+            case CREATE:
+                provider.getItems().add(doctor);
+                provider.refreshAll();
+                break;
+            case UPDATE:
+                provider.refreshItem(doctor);
+                break;
+            case DELETE:
+                provider.getItems().remove(doctor);
+                provider.refreshAll();
+                break;
+        }
     }
 
 
