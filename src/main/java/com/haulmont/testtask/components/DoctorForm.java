@@ -44,6 +44,25 @@ public class DoctorForm extends Composite implements View {
         binder.bind(firstName, Doctor::getFirstName, Doctor::setFirstName);
         binder.bind(patronymic, Doctor::getThirdName, Doctor::setThirdName);
         binder.bind(specialization, Doctor::getSpecialization, Doctor::setSpecialization);
+
+        binder.forField(secondName).withValidator(second -> ((second.length() >= 2) &&
+                        (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
+                "Second name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Doctor::getSecondName, Doctor::setSecondName);
+        binder.forField(firstName).withValidator(first -> ((first.length() >= 2) &&
+                        (first.matches("[А-Яа-я]+") || first.matches("[a-zA-Z]+"))),
+                "First name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Doctor::getFirstName, Doctor::setFirstName);
+        binder.forField(patronymic).withValidator(third -> ((third.length() >= 2) &&
+                        (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
+                "Third name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Doctor::getThirdName, Doctor::setThirdName);
+        binder.forField(specialization).withValidator(third -> ((third.length() >= 2) &&
+                        (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
+                "Specialization should be longer than two symbols and contain only Russian or English letters")
+                .bind(Doctor::getSpecialization, Doctor::setSpecialization);
+
+
     }
 
     public void setDoctorToForm(Doctor doctor){

@@ -20,7 +20,9 @@ public class PrescriptionService {
         session.save(prescription);
     }
     public static void updatePrescription (Prescription prescription ){
+        Transaction transaction = session.beginTransaction();
         session.update(prescription );
+        transaction.commit();
     }
 
     public static void deletePrescription (Prescription prescription ){

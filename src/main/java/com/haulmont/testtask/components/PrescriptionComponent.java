@@ -9,6 +9,8 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
 
 public class PrescriptionComponent extends Composite implements View {
@@ -49,7 +51,8 @@ public class PrescriptionComponent extends Composite implements View {
 
     private void initButtonListeners(){
         add.addClickListener(buttonClickEvent -> {
-            prescriptionForm.setPrescriptionToForm(new Prescription());
+            Prescription prescription = new Prescription();
+            prescriptionForm.setPrescriptionToForm(prescription);
             subWindow.center();
             this.getUI().getUI().addWindow(subWindow);
         });
@@ -64,12 +67,21 @@ public class PrescriptionComponent extends Composite implements View {
 
         delete.addClickListener(event -> {
             Prescription prescription = prescriptionGrid.asSingleSelect().getValue();
+            String message = "";
+            Notification notif = null;
             if(prescription != null){
                 try {
                     PrescriptionService.deletePrescription(prescription);
                     updateList(prescription, CrudOperations.DELETE);
+                    message = "Prescription has been deleted";
+                    notif = new Notification("", message);
+                    notif.setPosition(Position.BOTTOM_RIGHT);
+                    notif.show(Page.getCurrent());
                 } catch (Exception e){
-                    e.printStackTrace();
+                    message = "Something went wrong";
+                    notif = new Notification("", message, Notification.Type.WARNING_MESSAGE);
+                    notif.setPosition(Position.BOTTOM_RIGHT);
+                    notif.show(Page.getCurrent());
                 }
             }
         });

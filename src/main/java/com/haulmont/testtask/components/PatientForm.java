@@ -6,8 +6,10 @@ import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.util.CrudOperations;
 import com.sun.corba.se.spi.orbutil.fsm.Input;
 import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
+import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
 import org.vaadin.inputmask.InputMask;
@@ -45,15 +47,28 @@ public class PatientForm extends Composite implements View {
     }
 
     private void setUpBinder(){
-        binder.bind(secondName, Patient::getSecondName, Patient::setSecondName);
-        binder.bind(firstName, Patient::getFirstName, Patient::setFirstName);
-        binder.bind(patronymic, Patient::getThirdName, Patient::setThirdName);
-        binder.bind(phoneNumber, Patient::getPhoneNumber, Patient::setPhoneNumber);
+        binder.forField(secondName).withValidator(second -> ((second.length() >= 2) &&
+                (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
+                "Second name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Patient::getSecondName, Patient::setSecondName);
+        binder.forField(firstName).withValidator(first -> ((first.length() >= 2) &&
+                (first.matches("[А-Яа-я]+") || first.matches("[a-zA-Z]+"))),
+                "First name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Patient::getFirstName, Patient::setFirstName);
+        binder.forField(patronymic).withValidator(third -> ((third.length() >= 2) &&
+                (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
+                "Third name should be longer than two symbols and contain only Russian or English letters")
+                .bind(Patient::getThirdName, Patient::setThirdName);
+        binder.forField(phoneNumber).withValidator(phone -> (phone.length() >= 16) && (!phone.contains("_")), "Wrong phone number format" ).bind(Patient::getPhoneNumber, Patient::setPhoneNumber);
     }
 
     private void initButtonListeners(){
         save.addClickListener(event ->{
+            BinderValidationStatus<Patient> status = binder.validate();
+            if(status.hasErrors()) return;
+
             Patient patient = binder.getBean();
+            boolean a = patient.getFirstName().matches("[а-яА-я]+");
             String message = "";
             if(patient.getId() == 0){
                 PatientService.addPatient(patient);

@@ -9,6 +9,7 @@ import com.haulmont.testtask.entities.Prescription;
 import com.haulmont.testtask.entities.Priority;
 import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.Binder;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
@@ -18,7 +19,7 @@ import org.vaadin.inputmask.InputMask;
 public class PrescriptionForm extends Composite implements View {
     private Binder<Prescription> binder = new Binder<>(Prescription.class);
 
-    private TextField description = new TextField("Description");
+    private TextArea description = new TextArea("Description");
     private ComboBox<Patient> patientComboBox = new ComboBox<>("Patient");
     private ComboBox<Doctor> doctorComboBox = new ComboBox<>("Doctor");
     private DateField dateField = new DateField("Begin date");
@@ -30,8 +31,9 @@ public class PrescriptionForm extends Composite implements View {
 
     public PrescriptionForm(PrescriptionComponent parent) {
         this.parent = parent;
-
-        InputMask.addTo(validity, "999");
+//        InputMask mask = new InputMask("\\d{0, 3}");
+//        mask.setRegexMask(true);
+//        mask.extend(validity);
         FormLayout layout =  new FormLayout();
         patientComboBox.setItems(PatientService.getPatients());
         doctorComboBox.setItems(DoctorService.getDoctors());
@@ -47,11 +49,21 @@ public class PrescriptionForm extends Composite implements View {
     }
 
     private void setUpBinder(){
+//        binder.forField(description).withValidator(second -> ((second.length() >= 2) &&
+//                        (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
+//                "Second name should be longer than two symbols and contain only Russian or English letters")
+//                .bind(Prescription::getDescription, Prescription::setDescription);
         binder.bind(description, Prescription::getDescription, Prescription::setDescription);
         binder.bind(patientComboBox, Prescription::getPatient, Prescription::setPatient);
         binder.bind(doctorComboBox, Prescription::getDoctor, Prescription::setDoctor);
         binder.bind(dateField, Prescription::getBeginDate, Prescription::setBeginDate);
         binder.bind(priorityComboBox, Prescription::getPriority, Prescription::setPriority);
+        binder.forField(validity)
+                .withConverter(new StringToIntegerConverter("must be integer"))
+                .withValidator(validity -> validity.toString().length() <= 3, "Prescription is valid for no longer than 999 days")
+                .bind(Prescription::getValidityInDays, Prescription::setValidityInDays);
+
+
     }
 
     public void setPrescriptionToForm(Prescription prescription){

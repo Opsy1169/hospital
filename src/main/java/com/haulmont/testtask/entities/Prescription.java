@@ -3,6 +3,7 @@ package com.haulmont.testtask.entities;
 import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Date;
 import java.time.LocalDate;
 

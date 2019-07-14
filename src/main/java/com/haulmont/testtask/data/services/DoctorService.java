@@ -19,7 +19,10 @@ public class DoctorService {
 
     }
     public static void updateDoctor (Doctor Doctor ){
+
+        Transaction transaction = session.beginTransaction();
         session.update(Doctor );
+        transaction.commit();
     }
 
     public static void deleteDoctor (Doctor Doctor ){

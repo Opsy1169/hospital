@@ -10,6 +10,8 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
 
 import javax.print.Doc;
@@ -29,6 +31,10 @@ public class DoctorComponent extends Composite implements View {
 
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
+//        doctorGrid.setHeight("1200px");
+//        doctorGrid.setSizeFull();
+        mainContent.setHeight("1000px");
+        mainContent.setExpandRatio(doctorGrid, 0.9f);
 
         VerticalLayout subcontent = new VerticalLayout();
         mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
@@ -42,7 +48,7 @@ public class DoctorComponent extends Composite implements View {
         });
 
         initButtonListenters();
-        mainContent.setSizeFull();
+//        mainContent.setSizeFull();
         doctorGrid.setSizeFull();
 
         doctorGrid.setDataProvider(provider);
@@ -68,12 +74,21 @@ public class DoctorComponent extends Composite implements View {
 
         delete.addClickListener(event -> {
             Doctor doctor = doctorGrid.asSingleSelect().getValue();
+            String message = "";
+            Notification notification = null;
             if(doctor != null){
                 try {
                     DoctorService.deleteDoctor(doctor);
                     updateList(doctor, CrudOperations.DELETE);
+                    message = "Doctor has been deleted";
+                    notification = new Notification("", message);
+                    notification.setPosition(Position.BOTTOM_RIGHT);
+                    notification.show(Page.getCurrent());
                 } catch (Exception e){
-                    e.printStackTrace();
+                    message = "Doctor can't be deleted due to prescriptions assigned by him";
+                    notification = new Notification("", message, Notification.Type.WARNING_MESSAGE);
+                    notification.setPosition(Position.BOTTOM_RIGHT);
+                    notification.show(Page.getCurrent());
                 }
             }
         });
