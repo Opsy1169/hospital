@@ -22,6 +22,7 @@ public class DoctorComponent extends Composite implements View {
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
     private Window subWindow = new Window("addEditWindow");
+    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
 
     ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorService.getDoctors());
 
@@ -36,8 +37,8 @@ public class DoctorComponent extends Composite implements View {
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
 //        doctorGrid.setHeight("1200px");
 //        doctorGrid.setSizeFull();
-        mainContent.setHeight("1000px");
-        mainContent.setExpandRatio(doctorGrid, 0.9f);
+        mainContent.setHeight("100%");
+        mainContent.setExpandRatio(doctorGrid, 0.8f);
 
         VerticalLayout subcontent = new VerticalLayout();
         mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
@@ -56,6 +57,15 @@ public class DoctorComponent extends Composite implements View {
 
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
+        doctorGrid.asSingleSelect().addValueChangeListener(event -> {
+            if(doctorGrid.asSingleSelect().getValue() != null) {
+                mainContent.addComponent(statisticLayout);
+            }else{
+                mainContent.removeComponent(statisticLayout);
+            }
+
+        });
+
 
     }
 

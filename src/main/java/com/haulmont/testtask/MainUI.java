@@ -45,7 +45,7 @@ public class MainUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
-        HorizontalLayout mainLayout = new HorizontalLayout();
+        VerticalLayout mainLayout = new VerticalLayout();
         TabSheet tabSheet = new TabSheet();
         tabSheet.addTab(new PatientComponent(), "Patients");
         tabSheet.addTab(new DoctorComponent(), "Doctors");
@@ -53,7 +53,7 @@ public class MainUI extends UI {
         mainLayout.addComponent(tabSheet);
 
 
-
+        tabSheet.setSizeFull();
         mainLayout.setSizeFull();
         setContent(mainLayout);
 

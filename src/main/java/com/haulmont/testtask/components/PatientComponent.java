@@ -30,6 +30,11 @@ public class PatientComponent extends Composite implements View {
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
 
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, patientGrid);
+        patientGrid.setSizeFull();
+
+        mainContent.setHeight("100%");
+        mainContent.setExpandRatio(patientGrid, 0.8f);
+
         mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
 
         VerticalLayout subContent = new VerticalLayout(patientForm);
@@ -40,8 +45,7 @@ public class PatientComponent extends Composite implements View {
 
         initButtonListeners();
 
-        mainContent.setSizeFull();
-        patientGrid.setSizeFull();
+
 
         patientGrid.setDataProvider(provider);
 //        patientGrid.setItems(PatientService.getPatients());

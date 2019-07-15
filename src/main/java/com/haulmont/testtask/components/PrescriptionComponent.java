@@ -25,6 +25,7 @@ public class PrescriptionComponent extends Composite implements View {
     private ComboBox<Patient> patientFilter = new ComboBox<>("Filter by patient");
     private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
     private TextField descriptionFilter = new TextField("Filter by description");
+    private TextField a = new TextField();
     ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionService.getPrescriptions());
 
     PrescriptionForm prescriptionForm = new PrescriptionForm(this);
@@ -61,8 +62,10 @@ public class PrescriptionComponent extends Composite implements View {
 //        mainContent.setComponentAlignment(headerLayout, Alignment.MIDDLE_RIGHT);
         prescriptionGrid.setDataProvider(provider);
         mainContent.setSizeFull();
+        mainContent.setExpandRatio(prescriptionGrid, 0.8f);
         prescriptionGrid.setSizeFull();
         setCompositionRoot(mainContent);
+
 
     }
     private void filterGrid(){
@@ -153,4 +156,5 @@ public class PrescriptionComponent extends Composite implements View {
                 break;
         }
     }
+
 }
