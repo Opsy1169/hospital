@@ -57,11 +57,14 @@ public class DoctorComponent extends Composite implements View {
 
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
+        mainContent.addComponent(statisticLayout);
+        statisticLayout.setVisible(false);
         doctorGrid.asSingleSelect().addValueChangeListener(event -> {
             if(doctorGrid.asSingleSelect().getValue() != null) {
-                mainContent.addComponent(statisticLayout);
+                statisticLayout.setVisible(true);
+
             }else{
-                mainContent.removeComponent(statisticLayout);
+                statisticLayout.setVisible(false);
             }
 
         });
