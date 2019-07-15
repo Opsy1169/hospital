@@ -1,6 +1,7 @@
 package com.haulmont.testtask.entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "patient", schema = "public")
@@ -67,5 +68,23 @@ public class Patient {
                 ", thirdName='" + thirdName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return id == patient.id &&
+                Objects.equals(firstName, patient.firstName) &&
+                Objects.equals(secondName, patient.secondName) &&
+                Objects.equals(thirdName, patient.thirdName) &&
+                Objects.equals(phoneNumber, patient.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, firstName, secondName, thirdName, phoneNumber);
     }
 }

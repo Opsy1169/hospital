@@ -1,9 +1,11 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.data.services.PrescriptionService;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.entities.Prescription;
+import com.haulmont.testtask.entities.Priority;
 import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
@@ -20,13 +22,25 @@ public class PrescriptionComponent extends Composite implements View {
     private Button add = new Button("", VaadinIcons.PLUS);
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
+    private ComboBox<Patient> patientFilter = new ComboBox<>("Filter by patient");
+    private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
+    private TextField descriptionFilter = new TextField("Filter by description");
     ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionService.getPrescriptions());
 
     PrescriptionForm prescriptionForm = new PrescriptionForm(this);
 
     public PrescriptionComponent(){
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
+
+        HorizontalLayout buttonLayout = new HorizontalLayout( add, delete, edit);
+        HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter);
+        HorizontalLayout headerLayout = new HorizontalLayout(filterLayout, buttonLayout);
+        headerLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
+        headerLayout.setWidth("100%");
+
+        patientFilter.setItems(PatientService.getPatients());
+        priorityFilter.setItems(Priority.values());
+
 
         VerticalLayout subContent = new VerticalLayout();
         subWindow.setContent(subContent);
@@ -38,15 +52,50 @@ public class PrescriptionComponent extends Composite implements View {
         subWindow.addCloseListener(event -> prescriptionForm.unbindPrescription());
 
         initButtonListeners();
+        initFilterListeners();
 
 
-        VerticalLayout mainContent = new VerticalLayout(buttonLayout, prescriptionGrid);
-        mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, prescriptionGrid);
+//        mainContent.setComponentAlignment(headerLayout, Alignment.MIDDLE_RIGHT);
         prescriptionGrid.setDataProvider(provider);
         mainContent.setSizeFull();
         prescriptionGrid.setSizeFull();
         setCompositionRoot(mainContent);
 
+    }
+    private void filterGrid(){
+        Patient patient = patientFilter.getValue();
+        Priority priority = priorityFilter.getValue();
+        String descriptionString = descriptionFilter.getValue();
+        provider.setFilter(prescription -> {
+            boolean patientCondition = true;
+            boolean priorityCondition = true;
+            boolean descriptionCondition = true;
+            if(patient != null) {
+                patientCondition = prescription.getPatient().equals(patient);
+            }
+            if(priority != null){
+                priorityCondition = prescription.getPriority() == priority;
+            }
+            if(descriptionString != "" || descriptionString != null){
+                descriptionCondition = prescription.getDescription().toLowerCase().contains(descriptionString.trim().toLowerCase());
+            }
+            return patientCondition && priorityCondition && descriptionCondition;
+        });
+    }
+
+    private void initFilterListeners(){
+        patientFilter.addValueChangeListener(event -> {
+            filterGrid();
+        });
+
+        priorityFilter.addValueChangeListener( event -> {
+            filterGrid();
+        });
+
+        descriptionFilter.addValueChangeListener(event -> {
+            filterGrid();
+        });
     }
 
     private void initButtonListeners(){
