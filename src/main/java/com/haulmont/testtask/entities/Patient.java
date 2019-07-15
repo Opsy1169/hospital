@@ -61,13 +61,7 @@ public class Patient {
 
     @Override
     public String toString() {
-        return "Patient{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", thirdName='" + thirdName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
+        return  getFirstName() + " " + getSecondName() + " " + getThirdName();
     }
 
     @Override

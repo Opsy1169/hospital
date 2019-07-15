@@ -29,6 +29,9 @@ public class DoctorComponent extends Composite implements View {
 
     public DoctorComponent(){
 
+        doctorGrid.setColumnOrder("firstName", "secondName", "thirdName", "specialization");
+        doctorGrid.removeColumn("id");
+
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
 //        doctorGrid.setHeight("1200px");

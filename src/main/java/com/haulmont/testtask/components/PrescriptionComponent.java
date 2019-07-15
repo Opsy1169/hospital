@@ -31,6 +31,8 @@ public class PrescriptionComponent extends Composite implements View {
 
     public PrescriptionComponent(){
 
+        prescriptionGrid.setColumnOrder("description", "patient", "doctor", "beginDate", "validityInDays", "priority");
+        prescriptionGrid.removeColumn("id");
 
         HorizontalLayout buttonLayout = new HorizontalLayout( add, delete, edit);
         HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter);

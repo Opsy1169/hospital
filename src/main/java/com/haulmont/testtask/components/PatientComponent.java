@@ -24,6 +24,9 @@ public class PatientComponent extends Composite implements View {
 
     public PatientComponent(){
 
+        patientGrid.setColumnOrder("firstName", "secondName", "thirdName", "phoneNumber");
+        patientGrid.removeColumn("id");
+
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
 
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, patientGrid);
