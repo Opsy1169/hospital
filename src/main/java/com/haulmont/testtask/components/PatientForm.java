@@ -1,5 +1,6 @@
 package com.haulmont.testtask.components;
 
+import com.haulmont.testtask.controllers.PatientController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Doctor;
 import com.haulmont.testtask.entities.Patient;
@@ -12,7 +13,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
-//import org.vaadin.inputmask.InputMask;
+import org.vaadin.inputmask.InputMask;
 
 public class PatientForm extends Composite implements View {
 
@@ -28,7 +29,7 @@ public class PatientForm extends Composite implements View {
     private Button cancel = new Button("Cancel");
     public PatientForm(PatientComponent parent){
         this.parent = parent;
-//        InputMask.addTo(phoneNumber, "+9 999 999-99-99");
+        InputMask.addTo(phoneNumber, "+9 999 999-99-99");
         FormLayout mainContent = new FormLayout();
         HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel);
         mainContent.addComponents(secondName, firstName, patronymic, phoneNumber, buttonLayout);
@@ -71,11 +72,11 @@ public class PatientForm extends Composite implements View {
             boolean a = patient.getFirstName().matches("[а-яА-я]+");
             String message = "";
             if(patient.getId() == 0){
-                PatientService.addPatient(patient);
+                PatientController.addPatient(patient);
                 message = "New patient has been added";
                 parent.updateList(patient, CrudOperations.CREATE);
             }else{
-                PatientService.updatePatient(patient);
+                PatientController.updatePatient(patient);
                 message = "The patient has been updated";
                 parent.updateList(patient, CrudOperations.UPDATE);
             }

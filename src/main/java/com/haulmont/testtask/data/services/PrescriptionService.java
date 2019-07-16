@@ -12,58 +12,79 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 
-public class PrescriptionService {
+public class PrescriptionService extends Service<Prescription>{
     private static SessionFactory factory = HibernateUtil.getSessionFactory();
     private static Session session = factory.openSession();
+    private static PrescriptionService instance;
 
-    public static void addPrescription (Prescription prescription){
-        session.save(prescription);
-    }
-    public static void updatePrescription (Prescription prescription ){
-        Transaction transaction = session.beginTransaction();
-        session.update(prescription );
-        transaction.commit();
-    }
+    private PrescriptionService(){}
 
-    public static void deletePrescription (Prescription prescription ){
-        try {
-            Transaction transaction = session.beginTransaction();
-            session.delete(prescription);
-            transaction.commit();
-        }catch (ConstraintViolationException e){
-            e.printStackTrace();
+    public static PrescriptionService getInstance(){
+        if(instance == null){
+            instance = new PrescriptionService();
         }
+        return instance;
     }
 
-    public static List<Prescription> getPrescriptions(){
-        return session.createQuery("from Prescription ").list();
+//    public  void addPrescription (Prescription prescription){
+//        session.save(prescription);
+//    }
+//    public  void updatePrescription (Prescription prescription ){
+//        Transaction transaction = session.beginTransaction();
+//        session.update(prescription );
+//        transaction.commit();
+//    }
+//
+//    public  void deletePrescription (Prescription prescription ){
+//            Transaction transaction = session.beginTransaction();
+//            session.delete(prescription);
+//            transaction.commit();
+//    }
+
+    public  List<Prescription> getPrescriptions(){
+        Session session = factory.openSession();
+        List<Prescription> prescriptions = session.createQuery("from Prescription ").list();
+        session.close();
+        return prescriptions;
     }
 
-    public static List<Prescription> getPrescriptionById(int id){
-        return session.createQuery("select p from Prescription p where p.id = :id").setParameter("id", id).list();
+    public  List<Prescription> getPrescriptionById(int id){
+        Session session = factory.openSession();
+        List<Prescription> prescriptions = session.createQuery("select p from Prescription p where p.id = :id").setParameter("id", id).list();
+        session.close();
+        return prescriptions;
     }
 
-    public static List getPrescriptionByDoctor(Doctor doctor){
-        return session.createQuery("select p from Prescription p where p.doctor = :doctor").setParameter("doctor", doctor).list();
+    public  List getPrescriptionByDoctor(Doctor doctor){
+        Session session = factory.openSession();
+        List<Prescription> prescriptions = session.createQuery("select p from Prescription p where p.doctor = :doctor").setParameter("doctor", doctor).list();
+        session.close();
+        return prescriptions;
     }
 
-    public static List getPrescriptionByPatient(Patient patient){
-        return session.createQuery("select p from Prescription p where p.patient = :patient").setParameter("patient", patient).list();
+    public  List getPrescriptionByPatient(Patient patient){
+        Session session = factory.openSession();
+        List<Prescription> prescriptions = session.createQuery("select p from Prescription p where p.patient = :patient").setParameter("patient", patient).list();
+        session.close();
+        return prescriptions;
     }
 
-    public static List getPrescriptionByPriority(Priority priority){
-        return session.createQuery("select p from Prescription p where p.priority = :priority").setParameter("priority", priority).list();
+    public  List getPrescriptionByPriority(Priority priority){
+        Session session = factory.openSession();
+        List<Prescription> prescriptions = session.createQuery("select p from Prescription p where p.priority = :priority").setParameter("priority", priority).list();
+        session.close();
+        return prescriptions;
     }
 
-    public static void getPrescriptionByDate(){}
+    public void getPrescriptionByDate(){}
 
-    public static void getPrescriptionGivenAfterDate(){}
+    public void getPrescriptionGivenAfterDate(){}
 
-    public static void getPrescriptionGivenBeforeDate(){}
+    public void getPrescriptionGivenBeforeDate(){}
 
-    public static void getPrescriptionByDescription(){}
+    public void getPrescriptionByDescription(){}
 
-    public static void getExpiredPrescription(){ }
+    public void getExpiredPrescription(){ }
 
-    public static void getValidPrescription(){}
+    public void getValidPrescription(){}
 }

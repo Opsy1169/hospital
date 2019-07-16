@@ -23,7 +23,8 @@ public class StatisticComponent extends HorizontalLayout {
     private Label fullname = new Label();
     private Label signed = new Label();
     private Label ofTotal = new Label();
-    private Label ofValid = new Label();
+    private Label valid = new Label();
+    private static StatisticComponent statisticComponent = null;
 
 
     public StatisticComponent(){
@@ -35,32 +36,26 @@ public class StatisticComponent extends HorizontalLayout {
 
         percentageOfTotal.addComponents(new Label("Percentage of total number of prescriptions"), ofTotal);
 
-        percentageOfValid.addComponents(new Label("Number of valid by today"), ofValid);
+        percentageOfValid.addComponents(new Label("Number of valid by today"), valid);
         fullNameLayout.setSizeFull();
         signedByDoctor.setSizeFull();
         percentageOfTotal.setSizeFull();
-        percentageOfValid.setSizeFull();
+        valid.setSizeFull();
 
     }
 
-    public void setDoctor(Doctor doctor){
-        List<Prescription> prescriptions = PrescriptionService.getPrescriptions();
-        Predicate<Prescription> prescriptionPredicate = prescription -> prescription.getDoctor().equals(doctor);
-        Predicate<Prescription> validPredicate = prescription -> prescription.getBeginDate().
-                plusDays(prescription.getValidityInDays()).isAfter(LocalDate.now());
+//    public static StatisticComponent getInstance(){
+//        if(statisticComponent == null){
+//            statisticComponent = new StatisticComponent();
+//        }
+//        return statisticComponent;
+//    }
 
-        List<Predicate<Prescription>> predicateList = new ArrayList<Predicate<Prescription>>(Arrays.asList(prescriptionPredicate, validPredicate));
-        Predicate<Prescription> combinedPredicate = predicateList.stream().reduce(Predicate::and).get();
+    public void setDoctorToPanel(String fullname, int signed, double oftotal, double valid){
+        this.fullname.setCaption(fullname);
+        this.signed.setCaption(String.valueOf(signed));
+        this.ofTotal.setCaption(String.valueOf(oftotal) + "%");
+        this.valid.setCaption(String.valueOf(valid));
 
-        Stream<Prescription> stream = prescriptions.stream().filter(prescriptionPredicate);
-
-        List<Prescription> a = prescriptions.stream().filter(prescriptionPredicate).collect(Collectors.toList());
-        double byDoctor = stream.count();
-        long  valid = prescriptions.stream().filter(combinedPredicate).count();
-        fullname.setCaption(doctor.toString());
-        signed.setCaption(String.valueOf(byDoctor));
-        int total = (int) Math.ceil((byDoctor/prescriptions.size())*100);
-        ofTotal.setCaption(String.valueOf(total));
-        ofValid.setCaption(String.valueOf(valid));
     }
 }

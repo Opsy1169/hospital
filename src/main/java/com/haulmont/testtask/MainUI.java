@@ -63,10 +63,10 @@ public class MainUI extends UI {
 
 
     public void test() {
-        Doctor doctor = new Doctor();
-        doctor.setFirstName("asdasdas");
-        doctor.setSecondName("qweqweqwe");
-        DoctorService.addDoctor(doctor);
+//        Doctor doctor = new Doctor();
+//        doctor.setFirstName("asdasdas");
+//        doctor.setSecondName("qweqweqwe");
+//        DoctorService.addDoctor(doctor);
 //        System.out.println(PatientService.getPatients());
 //        Patient patient =  PatientService.getPatientById(2).get(0);
 //        System.out.println(patient);

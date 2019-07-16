@@ -1,6 +1,8 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.controllers.DoctorController;
+import com.haulmont.testtask.controllers.StatisticController;
 import com.haulmont.testtask.data.services.DoctorService;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Doctor;
@@ -23,9 +25,9 @@ public class DoctorComponent extends Composite implements View {
     private Button edit = new Button("", VaadinIcons.EDIT);
     private Window subWindow = new Window("");
 //    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
-    private StatisticComponent statisticLayout = new StatisticComponent();
+    private StatisticComponent statisticLayout = StatisticController.getStatisticComponent();
 
-    ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorService.getDoctors());
+    ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorController.getAllDoctors());
 
     DoctorForm doctorForm = new DoctorForm(this);
 
@@ -63,7 +65,8 @@ public class DoctorComponent extends Composite implements View {
         doctorGrid.asSingleSelect().addValueChangeListener(event -> {
             Doctor doctor = doctorGrid.asSingleSelect().getValue();
             if(doctor != null) {
-                statisticLayout.setDoctor(doctor);
+                StatisticController.setDoctor(doctor, statisticLayout);
+//                statisticLayout.setDoctor(doctor);
                 statisticLayout.setVisible(true);
 
             }else{
@@ -99,7 +102,7 @@ public class DoctorComponent extends Composite implements View {
             Notification notification = null;
             if(doctor != null){
                 try {
-                    DoctorService.deleteDoctor(doctor);
+                    DoctorController.deleteDoctor(doctor);
                     updateList(doctor, CrudOperations.DELETE);
                     message = "Doctor has been deleted";
                     notification = new Notification("", message);
@@ -122,7 +125,8 @@ public class DoctorComponent extends Composite implements View {
                 provider.refreshAll();
                 break;
             case UPDATE:
-                provider.refreshItem(doctor);
+//                provider.refreshItem(doctor);
+                provider.refreshAll();
                 break;
             case DELETE:
                 provider.getItems().remove(doctor);

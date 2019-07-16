@@ -1,5 +1,8 @@
 package com.haulmont.testtask.components;
 
+import com.haulmont.testtask.controllers.DoctorController;
+import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.DoctorService;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.data.services.PrescriptionService;
@@ -35,8 +38,8 @@ public class PrescriptionForm extends Composite implements View {
 //        mask.setRegexMask(true);
 //        mask.extend(validity);
         FormLayout layout =  new FormLayout();
-        patientComboBox.setItems(PatientService.getPatients());
-        doctorComboBox.setItems(DoctorService.getDoctors());
+        patientComboBox.setItems(PatientController.getAllPatients());
+        doctorComboBox.setItems(DoctorController.getAllDoctors());
         priorityComboBox.setItems(Priority.values());
 
         initButtonListeners();
@@ -78,11 +81,11 @@ public class PrescriptionForm extends Composite implements View {
             Prescription prescription = binder.getBean();
             String message = "";
             if(prescription.getId() == 0){
-                PrescriptionService.addPrescription(prescription);
+                PrescriptionController.addPrescription(prescription);
                 message = "New prescription has been added";
                 parent.updateList(prescription, CrudOperations.CREATE);
             }else{
-                PrescriptionService.updatePrescription(prescription);
+                PrescriptionController.updatePrescription(prescription);
                 message = "The prescription has been updated";
                 parent.updateList(prescription, CrudOperations.UPDATE);
             }

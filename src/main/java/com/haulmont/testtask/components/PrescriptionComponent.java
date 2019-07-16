@@ -1,6 +1,8 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.data.services.PrescriptionService;
 import com.haulmont.testtask.entities.Patient;
@@ -26,7 +28,7 @@ public class PrescriptionComponent extends Composite implements View {
     private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
     private TextField descriptionFilter = new TextField("Filter by description");
     private TextField a = new TextField();
-    ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionService.getPrescriptions());
+    ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionController.getAllPrescriptions());
 
     PrescriptionForm prescriptionForm = new PrescriptionForm(this);
 
@@ -41,7 +43,7 @@ public class PrescriptionComponent extends Composite implements View {
         headerLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
         headerLayout.setWidth("100%");
 
-        patientFilter.setItems(PatientService.getPatients());
+        patientFilter.setItems(PatientController.getAllPatients());
         priorityFilter.setItems(Priority.values());
 
 
@@ -127,7 +129,7 @@ public class PrescriptionComponent extends Composite implements View {
             Notification notif = null;
             if(prescription != null){
                 try {
-                    PrescriptionService.deletePrescription(prescription);
+                    PrescriptionController.deletePrescription(prescription);
                     updateList(prescription, CrudOperations.DELETE);
                     message = "Prescription has been deleted";
                     notif = new Notification("", message);
@@ -150,7 +152,8 @@ public class PrescriptionComponent extends Composite implements View {
                 provider.refreshAll();
                 break;
             case UPDATE:
-                provider.refreshItem(prescription);
+//                provider.refreshItem(prescription);
+                provider.refreshAll();
                 break;
             case DELETE:
                 provider.getItems().remove(prescription);

@@ -78,7 +78,7 @@ public class PatientComponent extends Composite implements View {
             Notification notification = null;
             if(patient != null){
                 try {
-                    PatientService.deletePatient(patient);
+                    PatientController.deletePatient(patient);
                     updateList(patient, CrudOperations.DELETE);
                     message = "Patient has been deleted";
                     notification = new Notification("", message);
@@ -101,7 +101,8 @@ public class PatientComponent extends Composite implements View {
                 provider.refreshAll();
                 break;
             case UPDATE:
-                provider.refreshItem(patient);
+//                provider.refreshItem(patient);
+                provider.refreshAll();
                 break;
             case DELETE:
                 provider.getItems().remove(patient);

@@ -8,44 +8,73 @@ import org.hibernate.Transaction;
 
 import java.util.List;
 
-public class DoctorService {
+public class DoctorService extends Service<Doctor>{
     private static SessionFactory factory = HibernateUtil.getSessionFactory();
-    private static Session session = factory.openSession();
+//    private static Session session = factory.factory.openSession()();
+    private static DoctorService instance;
 
-    public static Doctor addDoctor (Doctor doctor){
-//        Session session = factory.getCurrentSession();
-        int id = (int)session.save(doctor);
-        return getDoctorById(id).get(0);
+    private DoctorService(){}
 
-    }
-    public static void updateDoctor (Doctor Doctor ){
-
-        Transaction transaction = session.beginTransaction();
-        session.update(Doctor );
-        transaction.commit();
+    public static DoctorService getInstance(){
+        if(instance == null){
+            instance = new DoctorService();
+        }
+        return instance;
     }
 
-    public static void deleteDoctor (Doctor Doctor ){
-        Transaction transaction = session.beginTransaction();
-        session.delete(Doctor );
-        transaction.commit();
+
+
+
+//    public int addDoctor (Doctor doctor){
+//        Session session = factory.openSession();
+//        int id = (int)session.save(doctor);
+//        session.close();
+//        return id;
+//
+//    }
+//    public  void updateDoctor(Doctor Doctor ){
+//        Session session = factory.openSession();
+//        Transaction transaction = session.beginTransaction();
+//        session.update(Doctor );
+//        transaction.commit();
+//        session.close();
+//    }
+//
+//    public  void deleteDoctor (Doctor Doctor ){
+//        Session session = factory.openSession();
+//        Transaction transaction = session.beginTransaction();
+//        session.delete(Doctor);
+//        transaction.commit();
+//        session.close();
+//    }
+
+    public  List<Doctor> getDoctors(){
+        Session session = factory.openSession();
+        List<Doctor> doctors = session.createQuery("from Doctor ").list();
+        session.close();
+        return doctors;
     }
 
-    public static List<Doctor> getDoctors(){
-        return session.createQuery("from Doctor ").list();
+    public  List<Doctor> getDoctorById(int id){
+        Session session = factory.openSession();
+        List<Doctor> doctors = session.createQuery("select d from Doctor d where d.id = :id").setParameter("id", id).list();
+        session.close();
+        return doctors;
     }
 
-    public static List<Doctor> getDoctorById(int id){
-        return session.createQuery("select d from Doctor d where d.id = :id").setParameter("id", id).list();
-    }
-
-    public static List<Doctor> getDoctorBySpecialization(String specialization){
-        return (List<Doctor>) session.createQuery("select d from Doctor d where d.specialization = :specialization")
+    public  List<Doctor> getDoctorBySpecialization(String specialization){
+        Session session = factory.openSession();
+        List<Doctor> doctors = (List<Doctor>) session.createQuery("select d from Doctor d where d.specialization = :specialization")
                 .setParameter("specialization", specialization).list();
+        session.close();
+        return doctors;
     }
 
-    public static List<Doctor> getDoctorByFullName(String firstName, String secondName, String thirdName){
-        return (List<Doctor>) session.createQuery("select d from Doctor d where d.firstName = :first and d.secondName = :second and d.thirdName = :third")
+    public  List<Doctor> getDoctorByFullName(String firstName, String secondName, String thirdName){
+        Session session = factory.openSession();
+        List<Doctor> doctors = (List<Doctor>) session.createQuery("select d from Doctor d where d.firstName = :first and d.secondName = :second and d.thirdName = :third")
                 .setParameter("first", firstName).setParameter("second", secondName).setParameter("third", thirdName).list();
+        session.close();
+        return doctors;
     }
 }
