@@ -18,7 +18,7 @@ import com.vaadin.ui.*;
 public class PrescriptionComponent extends Composite implements View {
 
     private Grid<Prescription> prescriptionGrid = new Grid<>(Prescription.class);
-    private Window subWindow = new Window("addEditWindow");
+    private Window subWindow = new Window("");
     private Button add = new Button("", VaadinIcons.PLUS);
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
@@ -108,6 +108,7 @@ public class PrescriptionComponent extends Composite implements View {
             Prescription prescription = new Prescription();
             prescriptionForm.setPrescriptionToForm(prescription);
             subWindow.center();
+            subWindow.setCaption("Add new prescription");
             this.getUI().getUI().addWindow(subWindow);
         });
         edit.addClickListener(buttonClickEvent -> {
@@ -115,6 +116,7 @@ public class PrescriptionComponent extends Composite implements View {
             if( prescription != null) {
                 prescriptionForm.setPrescriptionToForm(prescription);
                 subWindow.center();
+                subWindow.setCaption("Edit prescription");
                 this.getUI().getUI().addWindow(subWindow);
             }
         });

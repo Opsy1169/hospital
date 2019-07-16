@@ -21,11 +21,11 @@ import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.vaadin.inputmask.InputMask;
-import org.vaadin.inputmask.client.Alias;
-import org.vaadin.inputmask.client.Casing;
-import org.vaadin.inputmask.client.Definition;
-import org.vaadin.inputmask.client.PreValidator;
+//import org.vaadin.inputmask.InputMask;
+//import org.vaadin.inputmask.client.Alias;
+//import org.vaadin.inputmask.client.Casing;
+//import org.vaadin.inputmask.client.Definition;
+//import org.vaadin.inputmask.client.PreValidator;
 
 
 import java.sql.*;

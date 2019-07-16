@@ -12,7 +12,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.SerializableBiPredicate;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
-import org.vaadin.inputmask.InputMask;
+//import org.vaadin.inputmask.InputMask;
 
 public class PatientForm extends Composite implements View {
 
@@ -28,7 +28,7 @@ public class PatientForm extends Composite implements View {
     private Button cancel = new Button("Cancel");
     public PatientForm(PatientComponent parent){
         this.parent = parent;
-        InputMask.addTo(phoneNumber, "+9 999 999-99-99");
+//        InputMask.addTo(phoneNumber, "+9 999 999-99-99");
         FormLayout mainContent = new FormLayout();
         HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel);
         mainContent.addComponents(secondName, firstName, patronymic, phoneNumber, buttonLayout);

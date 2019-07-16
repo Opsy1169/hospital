@@ -1,6 +1,7 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.controllers.PatientController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.util.CrudOperations;
@@ -15,12 +16,12 @@ import com.vaadin.ui.*;
 public class PatientComponent extends Composite implements View {
 
     private Grid<Patient> patientGrid = new Grid<>(Patient.class);
-    private Window window = new Window("addEditWindow");
+    private Window window = new Window("");
     Button add = new Button("", VaadinIcons.PLUS);
     Button delete = new Button("", VaadinIcons.TRASH);
     Button edit = new Button("", VaadinIcons.EDIT);
     PatientForm patientForm = new PatientForm(this);
-    ListDataProvider<Patient> provider = DataProvider.ofCollection(PatientService.getPatients());
+    ListDataProvider<Patient> provider = DataProvider.ofCollection(PatientController.getAllPatients());
 
     public PatientComponent(){
 
@@ -57,6 +58,7 @@ public class PatientComponent extends Composite implements View {
         add.addClickListener(event -> {
             patientForm.setPatientToForm(new Patient());
             window.center();
+            window.setCaption("Add new patient");
             this.getUI().getUI().addWindow(window);
         });
 
@@ -65,6 +67,7 @@ public class PatientComponent extends Composite implements View {
             if(patient != null){
                 patientForm.setPatientToForm(patient);
                 window.center();
+                window.setCaption("Edit patient");
                 this.getUI().getUI().addWindow(window);
             }
         });

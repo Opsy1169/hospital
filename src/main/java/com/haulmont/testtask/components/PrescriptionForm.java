@@ -14,7 +14,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
-import org.vaadin.inputmask.InputMask;
+//import org.vaadin.inputmask.InputMask;
 
 public class PrescriptionForm extends Composite implements View {
     private Binder<Prescription> binder = new Binder<>(Prescription.class);

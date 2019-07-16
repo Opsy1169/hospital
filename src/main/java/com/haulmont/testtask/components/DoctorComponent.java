@@ -21,8 +21,9 @@ public class DoctorComponent extends Composite implements View {
     private Button add = new Button("", VaadinIcons.PLUS);
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
-    private Window subWindow = new Window("addEditWindow");
-    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
+    private Window subWindow = new Window("");
+//    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
+    private StatisticComponent statisticLayout = new StatisticComponent();
 
     ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorService.getDoctors());
 
@@ -60,7 +61,9 @@ public class DoctorComponent extends Composite implements View {
         mainContent.addComponent(statisticLayout);
         statisticLayout.setVisible(false);
         doctorGrid.asSingleSelect().addValueChangeListener(event -> {
-            if(doctorGrid.asSingleSelect().getValue() != null) {
+            Doctor doctor = doctorGrid.asSingleSelect().getValue();
+            if(doctor != null) {
+                statisticLayout.setDoctor(doctor);
                 statisticLayout.setVisible(true);
 
             }else{
@@ -76,6 +79,7 @@ public class DoctorComponent extends Composite implements View {
         add.addClickListener(clickEvent -> {
             doctorForm.setDoctorToForm(new Doctor());
             subWindow.center();
+            subWindow.setCaption("Add new doctor");
             this.getUI().addWindow(subWindow);
         });
 
@@ -84,6 +88,7 @@ public class DoctorComponent extends Composite implements View {
             if(doctor != null) {
                 doctorForm.setDoctorToForm(doctor);
                 subWindow.center();
+                subWindow.setCaption("Edit doctor");
                 this.getUI().addWindow(subWindow);
             }
         });
