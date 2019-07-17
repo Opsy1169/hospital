@@ -2,6 +2,8 @@ package com.haulmont.testtask.components;
 
 
 import com.haulmont.testtask.controllers.DoctorController;
+import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.controllers.StatisticController;
 import com.haulmont.testtask.data.services.DoctorService;
 import com.haulmont.testtask.data.services.PatientService;
@@ -17,6 +19,9 @@ import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
 
 import javax.print.Doc;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DoctorComponent extends Composite implements View {
     private Grid<Doctor> doctorGrid = new Grid<>(Doctor.class);
@@ -25,15 +30,20 @@ public class DoctorComponent extends Composite implements View {
     private Button edit = new Button("", VaadinIcons.EDIT);
     private Window subWindow = new Window("");
 //    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
-    private StatisticComponent statisticLayout = StatisticController.getStatisticComponent();
+    private StatisticComponent statisticLayout = new StatisticComponent();
 
-    ListDataProvider<Doctor> provider = DataProvider.ofCollection(DoctorController.getAllDoctors());
+//    private PatientController patientController = PatientController.getInstance();
+    private DoctorController doctorController = DoctorController.getInstance();
+    private StatisticController statisticController = StatisticController.getInstance();
+//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
+
+    ListDataProvider<Doctor> provider = DataProvider.ofCollection(doctorController.getAllDoctors());
 
     DoctorForm doctorForm = new DoctorForm(this);
 
     public DoctorComponent(){
 
-        doctorGrid.setColumnOrder("firstName", "secondName", "thirdName", "specialization");
+        doctorGrid.setColumnOrder("secondName", "firstName",  "thirdName", "specialization");
         doctorGrid.removeColumn("id");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
@@ -58,6 +68,7 @@ public class DoctorComponent extends Composite implements View {
 //        mainContent.setSizeFull();
         doctorGrid.setSizeFull();
 
+
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
         mainContent.addComponent(statisticLayout);
@@ -65,7 +76,7 @@ public class DoctorComponent extends Composite implements View {
         doctorGrid.asSingleSelect().addValueChangeListener(event -> {
             Doctor doctor = doctorGrid.asSingleSelect().getValue();
             if(doctor != null) {
-                StatisticController.setDoctor(doctor, statisticLayout);
+                statisticController.setDoctor(doctor, statisticLayout);
 //                statisticLayout.setDoctor(doctor);
                 statisticLayout.setVisible(true);
 
@@ -76,6 +87,10 @@ public class DoctorComponent extends Composite implements View {
         });
 
 
+    }
+
+    public void hideStatistic(){
+        statisticLayout.setVisible(false);
     }
 
     private void initButtonListenters(){
@@ -102,7 +117,7 @@ public class DoctorComponent extends Composite implements View {
             Notification notification = null;
             if(doctor != null){
                 try {
-                    DoctorController.deleteDoctor(doctor);
+                    doctorController.deleteDoctor(doctor);
                     updateList(doctor, CrudOperations.DELETE);
                     message = "Doctor has been deleted";
                     notification = new Notification("", message);
@@ -121,15 +136,14 @@ public class DoctorComponent extends Composite implements View {
     public void updateList(Doctor doctor, CrudOperations operation){
         switch (operation){
             case CREATE:
-                provider.getItems().add(doctor);
+//                provider.getItems().add(doctor);
                 provider.refreshAll();
                 break;
             case UPDATE:
-//                provider.refreshItem(doctor);
                 provider.refreshAll();
                 break;
             case DELETE:
-                provider.getItems().remove(doctor);
+//                provider.getItems().remove(doctor);
                 provider.refreshAll();
                 break;
         }

@@ -13,25 +13,6 @@ public class HibernateUtil
     private static SessionFactory sessionFactory;
     private static StandardServiceRegistry registry;
 
-//    public static SessionFactory getSessionFactory()
-//    {
-//        try
-//        {
-//            if (sessionFactory == null)
-//            {
-//                Configuration configuration = new Configuration().configure(HibernateUtil.class.getResource("/hibernate.cfg.xml"));
-//                StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
-//                serviceRegistryBuilder.applySettings(configuration.getProperties());
-//                ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
-//                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-//            }
-//            return sessionFactory;
-//        } catch (Throwable ex)
-//        {
-//            System.err.println("Initial SessionFactory creation failed." + ex);
-//            throw new ExceptionInInitializerError(ex);
-//        }
-//    }
 
 
     public static void shutdown()

@@ -41,16 +41,29 @@ public class MainUI extends UI {
 //    private Grid<Customer> grid = new Grid<>(Customer.class);
 //    private TextField filterText = new TextField();
 //    private CustomerForm form = new CustomerForm(this);
+    private PrescriptionComponent prescriptionComponent = new PrescriptionComponent();
+    private PatientComponent patientComponent = new PatientComponent();
+    private DoctorComponent doctorComponent = new DoctorComponent();
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
+
         VerticalLayout mainLayout = new VerticalLayout();
         TabSheet tabSheet = new TabSheet();
-        tabSheet.addTab(new PatientComponent(), "Patients");
-        tabSheet.addTab(new DoctorComponent(), "Doctors");
-        tabSheet.addTab(new PrescriptionComponent(), "Prescriptions");
+        tabSheet.addTab(patientComponent, "Patients");
+        tabSheet.addTab(doctorComponent, "Doctors");
+        tabSheet.addTab(prescriptionComponent, "Prescriptions");
         mainLayout.addComponent(tabSheet);
+//        tabSheet.addComponentDetachListener(componentDetachEvent -> System.out.println("detach"));
+//        tabSheet.addFocusListener(focusEvent -> System.out.println("focused"));
+//        tabSheet.addBlurListener(blurEvent -> System.out.println("blur"));
+        tabSheet.addSelectedTabChangeListener(selectedTabChangeEvent -> {
+            if (tabSheet.getSelectedTab() instanceof DoctorComponent){
+                doctorComponent.hideStatistic();
+            }
+        });
+//        component.addContextClickListener(event -> System.out.println("clicked"));
 
 
         tabSheet.setSizeFull();

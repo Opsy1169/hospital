@@ -1,6 +1,8 @@
 package com.haulmont.testtask.components;
 
+import com.haulmont.testtask.controllers.DoctorController;
 import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Doctor;
 import com.haulmont.testtask.entities.Patient;
@@ -24,6 +26,10 @@ public class PatientForm extends Composite implements View {
     private TextField patronymic = new TextField("Patronymic");
     private TextField phoneNumber = new TextField("Phone number");
     private PatientComponent parent;
+
+    private PatientController patientController = PatientController.getInstance();
+//    private DoctorController doctorController = DoctorController.getInstance();
+//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
 
     private Button save = new Button("Save");
     private Button cancel = new Button("Cancel");
@@ -72,11 +78,11 @@ public class PatientForm extends Composite implements View {
             boolean a = patient.getFirstName().matches("[а-яА-я]+");
             String message = "";
             if(patient.getId() == 0){
-                PatientController.addPatient(patient);
+                patientController.addPatient(patient);
                 message = "New patient has been added";
                 parent.updateList(patient, CrudOperations.CREATE);
             }else{
-                PatientController.updatePatient(patient);
+                patientController.updatePatient(patient);
                 message = "The patient has been updated";
                 parent.updateList(patient, CrudOperations.UPDATE);
             }

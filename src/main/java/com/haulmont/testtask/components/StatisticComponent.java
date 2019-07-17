@@ -41,6 +41,8 @@ public class StatisticComponent extends HorizontalLayout {
         signedByDoctor.setSizeFull();
         percentageOfTotal.setSizeFull();
         valid.setSizeFull();
+        this.addComponentAttachListener(event -> System.out.println("component attached"));
+        this.addComponentDetachListener(event -> System.out.println("component detached"));
 
     }
 
@@ -51,7 +53,7 @@ public class StatisticComponent extends HorizontalLayout {
 //        return statisticComponent;
 //    }
 
-    public void setDoctorToPanel(String fullname, int signed, double oftotal, double valid){
+    public void setDoctorToPanel(String fullname, int signed, double oftotal, int valid){
         this.fullname.setCaption(fullname);
         this.signed.setCaption(String.valueOf(signed));
         this.ofTotal.setCaption(String.valueOf(oftotal) + "%");

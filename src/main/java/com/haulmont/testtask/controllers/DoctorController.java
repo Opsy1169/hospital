@@ -10,25 +10,48 @@ import java.util.List;
 
 public class DoctorController {
     private static DoctorService service = DoctorService.getInstance();
+    private static DoctorController doctorController;
+    private List<Doctor> doctors = service.getDoctors();
+
+    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
+
+    private DoctorController(){}
+
+    public static DoctorController getInstance(){
+        if(doctorController == null){
+            doctorController = new DoctorController();
+        }
+        return doctorController;
+    }
 
 
-    public static void deleteDoctor(Doctor doctor){
+    public synchronized void deleteDoctor(Doctor doctor){
         service.delete(doctor);
+        doctors.remove(doctor);
     }
 
-    public static void updateDoctor(Doctor doctor){
+    public void updateDoctor(Doctor doctor){
         service.update(doctor);
+        prescriptionController.updatePrescriptionsListForDoctor(doctor);
+
     }
 
-    public static List<Doctor> getAllDoctors(){
-        return service.getDoctors();
+    public synchronized List<Doctor> getAllDoctors(){
+        return doctors;
     }
 
-    public static Doctor addDoctor(Doctor doctor){
-        return getDoctorById(service.add(doctor));
+    public synchronized Doctor addDoctor(Doctor doctor){
+        Doctor doctorAdded = getDoctotByIdFromService(service.add(doctor));
+        doctors.add(doctorAdded);
+        return doctorAdded;
     }
 
-    public static Doctor getDoctorById(int id){
-        return  service.getDoctorById(id).get(0);
+    private Doctor getDoctotByIdFromService(int id){
+        return (Doctor) service.getDoctorById(id).get(0);
     }
+
+    public  Doctor getDoctorById(int id){
+        return doctors.stream().filter(doctor -> doctor.getId() == id).findFirst().orElse(null);//.collect(Collectors.toList()).get(0);
+    }
+
 }

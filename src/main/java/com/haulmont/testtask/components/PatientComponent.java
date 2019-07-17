@@ -1,7 +1,9 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.controllers.DoctorController;
 import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.util.CrudOperations;
@@ -21,11 +23,15 @@ public class PatientComponent extends Composite implements View {
     Button delete = new Button("", VaadinIcons.TRASH);
     Button edit = new Button("", VaadinIcons.EDIT);
     PatientForm patientForm = new PatientForm(this);
-    ListDataProvider<Patient> provider = DataProvider.ofCollection(PatientController.getAllPatients());
+
+    private PatientController patientController = PatientController.getInstance();
+//    private DoctorController doctorController = DoctorController.getInstance();
+//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
+    ListDataProvider<Patient> provider = DataProvider.ofCollection(patientController.getAllPatients());
 
     public PatientComponent(){
 
-        patientGrid.setColumnOrder("firstName", "secondName", "thirdName", "phoneNumber");
+        patientGrid.setColumnOrder("secondName", "firstName",  "thirdName", "phoneNumber");
         patientGrid.removeColumn("id");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
@@ -78,7 +84,7 @@ public class PatientComponent extends Composite implements View {
             Notification notification = null;
             if(patient != null){
                 try {
-                    PatientController.deletePatient(patient);
+                    patientController.deletePatient(patient);
                     updateList(patient, CrudOperations.DELETE);
                     message = "Patient has been deleted";
                     notification = new Notification("", message);
@@ -97,7 +103,7 @@ public class PatientComponent extends Composite implements View {
     public void updateList(Patient patient, CrudOperations operation){
         switch (operation){
             case CREATE:
-                provider.getItems().add(patient);
+//                provider.getItems().add(patient);
                 provider.refreshAll();
                 break;
             case UPDATE:
@@ -105,7 +111,7 @@ public class PatientComponent extends Composite implements View {
                 provider.refreshAll();
                 break;
             case DELETE:
-                provider.getItems().remove(patient);
+//                provider.getItems().remove(patient);
                 provider.refreshAll();
                 break;
         }

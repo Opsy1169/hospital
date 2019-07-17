@@ -30,7 +30,10 @@ public class PrescriptionForm extends Composite implements View {
     private ComboBox<Priority> priorityComboBox = new ComboBox<>("Priority");
     private Button save = new Button("save");
     private Button cancel = new Button("cancel");
-    PrescriptionComponent parent;
+    private PrescriptionComponent parent;
+    private PatientController patientController = PatientController.getInstance();
+    private DoctorController doctorController = DoctorController.getInstance();
+    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
 
     public PrescriptionForm(PrescriptionComponent parent) {
         this.parent = parent;
@@ -38,8 +41,8 @@ public class PrescriptionForm extends Composite implements View {
 //        mask.setRegexMask(true);
 //        mask.extend(validity);
         FormLayout layout =  new FormLayout();
-        patientComboBox.setItems(PatientController.getAllPatients());
-        doctorComboBox.setItems(DoctorController.getAllDoctors());
+        patientComboBox.setItems(patientController.getAllPatients());
+        doctorComboBox.setItems(doctorController.getAllDoctors());
         priorityComboBox.setItems(Priority.values());
 
         initButtonListeners();
@@ -62,8 +65,8 @@ public class PrescriptionForm extends Composite implements View {
         binder.bind(dateField, Prescription::getBeginDate, Prescription::setBeginDate);
         binder.bind(priorityComboBox, Prescription::getPriority, Prescription::setPriority);
         binder.forField(validity)
-                .withConverter(new StringToIntegerConverter("must be integer"))
-                .withValidator(validity -> validity.toString().length() <= 3, "Prescription is valid for no longer than 999 days")
+                .withConverter(new StringToIntegerConverter("Must be integer value"))
+                .withValidator(validity -> validity.toString().length() <= 3 && validity > 0, "Prescription should be positive and is valid for no longer than 999 days")
                 .bind(Prescription::getValidityInDays, Prescription::setValidityInDays);
 
 
@@ -81,11 +84,11 @@ public class PrescriptionForm extends Composite implements View {
             Prescription prescription = binder.getBean();
             String message = "";
             if(prescription.getId() == 0){
-                PrescriptionController.addPrescription(prescription);
+                prescriptionController.addPrescription(prescription);
                 message = "New prescription has been added";
                 parent.updateList(prescription, CrudOperations.CREATE);
             }else{
-                PrescriptionController.updatePrescription(prescription);
+                prescriptionController.updatePrescription(prescription);
                 message = "The prescription has been updated";
                 parent.updateList(prescription, CrudOperations.UPDATE);
             }

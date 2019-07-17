@@ -1,10 +1,12 @@
 package com.haulmont.testtask.components;
 
 
+import com.haulmont.testtask.controllers.DoctorController;
 import com.haulmont.testtask.controllers.PatientController;
 import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.data.services.PrescriptionService;
+import com.haulmont.testtask.entities.Doctor;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.entities.Prescription;
 import com.haulmont.testtask.entities.Priority;
@@ -28,7 +30,13 @@ public class PrescriptionComponent extends Composite implements View {
     private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
     private TextField descriptionFilter = new TextField("Filter by description");
     private TextField a = new TextField();
-    ListDataProvider<Prescription> provider = DataProvider.ofCollection(PrescriptionController.getAllPrescriptions());
+    private PatientController patientController = PatientController.getInstance();
+    private DoctorController doctorController = DoctorController.getInstance();
+    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
+
+    ListDataProvider<Prescription> prescriptionProvider = DataProvider.ofCollection(prescriptionController.getAllPrescriptions());
+    ListDataProvider<Patient> patientProvider = DataProvider.ofCollection(patientController.getAllPatients());
+    ListDataProvider<Doctor> doctorProvider = DataProvider.ofCollection(doctorController.getAllDoctors());
 
     PrescriptionForm prescriptionForm = new PrescriptionForm(this);
 
@@ -43,7 +51,7 @@ public class PrescriptionComponent extends Composite implements View {
         headerLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
         headerLayout.setWidth("100%");
 
-        patientFilter.setItems(PatientController.getAllPatients());
+        patientFilter.setItems(patientController.getAllPatients());
         priorityFilter.setItems(Priority.values());
 
 
@@ -54,6 +62,7 @@ public class PrescriptionComponent extends Composite implements View {
         subContent.setWidth("350px");
         subWindow.center();
 
+
         subWindow.addCloseListener(event -> prescriptionForm.unbindPrescription());
 
         initButtonListeners();
@@ -62,7 +71,7 @@ public class PrescriptionComponent extends Composite implements View {
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, prescriptionGrid);
 //        mainContent.setComponentAlignment(headerLayout, Alignment.MIDDLE_RIGHT);
-        prescriptionGrid.setDataProvider(provider);
+        prescriptionGrid.setDataProvider(prescriptionProvider);
         mainContent.setSizeFull();
         mainContent.setExpandRatio(prescriptionGrid, 0.8f);
         prescriptionGrid.setSizeFull();
@@ -74,7 +83,7 @@ public class PrescriptionComponent extends Composite implements View {
         Patient patient = patientFilter.getValue();
         Priority priority = priorityFilter.getValue();
         String descriptionString = descriptionFilter.getValue();
-        provider.setFilter(prescription -> {
+        prescriptionProvider.setFilter(prescription -> {
             boolean patientCondition = true;
             boolean priorityCondition = true;
             boolean descriptionCondition = true;
@@ -129,7 +138,7 @@ public class PrescriptionComponent extends Composite implements View {
             Notification notif = null;
             if(prescription != null){
                 try {
-                    PrescriptionController.deletePrescription(prescription);
+                    prescriptionController.deletePrescription(prescription);
                     updateList(prescription, CrudOperations.DELETE);
                     message = "Prescription has been deleted";
                     notif = new Notification("", message);
@@ -145,10 +154,37 @@ public class PrescriptionComponent extends Composite implements View {
         });
     }
 
-    public void updateList(Prescription prescription, CrudOperations operation){
+//    public void updateList(Prescription prescription, CrudOperations operation){
+//        switch (operation){
+//            case CREATE:
+//                provider.getItems().add(prescription);
+//                provider.refreshAll();
+//                break;
+//            case UPDATE:
+////                provider.refreshItem(prescription);
+//                provider.refreshAll();
+//                break;
+//            case DELETE:
+//                provider.getItems().remove(prescription);
+//                provider.refreshAll();
+//                break;
+//        }
+//    }
+
+    public void updateList(Object o, CrudOperations operation ){
+        ListDataProvider provider = null;
+        if(o instanceof Patient){
+            provider = patientProvider;
+        } else if(o instanceof Doctor){
+            provider = doctorProvider;
+        } else if(o instanceof  Prescription){
+            provider = prescriptionProvider;
+        } else{
+            return;
+        }
         switch (operation){
             case CREATE:
-                provider.getItems().add(prescription);
+//                provider.getItems().add(o);
                 provider.refreshAll();
                 break;
             case UPDATE:
@@ -156,10 +192,12 @@ public class PrescriptionComponent extends Composite implements View {
                 provider.refreshAll();
                 break;
             case DELETE:
-                provider.getItems().remove(prescription);
+//                provider.getItems().remove(o);
                 provider.refreshAll();
                 break;
         }
     }
+
+
 
 }

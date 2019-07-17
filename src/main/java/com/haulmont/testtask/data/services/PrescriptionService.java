@@ -26,20 +26,7 @@ public class PrescriptionService extends Service<Prescription>{
         return instance;
     }
 
-//    public  void addPrescription (Prescription prescription){
-//        session.save(prescription);
-//    }
-//    public  void updatePrescription (Prescription prescription ){
-//        Transaction transaction = session.beginTransaction();
-//        session.update(prescription );
-//        transaction.commit();
-//    }
-//
-//    public  void deletePrescription (Prescription prescription ){
-//            Transaction transaction = session.beginTransaction();
-//            session.delete(prescription);
-//            transaction.commit();
-//    }
+
 
     public  List<Prescription> getPrescriptions(){
         Session session = factory.openSession();

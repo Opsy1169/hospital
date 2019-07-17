@@ -1,6 +1,8 @@
 package com.haulmont.testtask.components;
 
 import com.haulmont.testtask.controllers.DoctorController;
+import com.haulmont.testtask.controllers.PatientController;
+import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.DoctorService;
 import com.haulmont.testtask.data.services.PatientService;
 import com.haulmont.testtask.entities.Doctor;
@@ -27,6 +29,10 @@ public class DoctorForm extends Composite implements View {
     private Button cancel = new Button("Cancel");
 
     private DoctorComponent parent;
+
+//    private PatientController patientController = PatientController.getInstance();
+    private DoctorController doctorController = DoctorController.getInstance();
+//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
 
     public DoctorForm(DoctorComponent parent) {
         this.parent = parent;
@@ -79,11 +85,11 @@ public class DoctorForm extends Composite implements View {
             Doctor doctor = binder.getBean();
             String message = "";
             if(doctor.getId() == 0) {
-                DoctorController.addDoctor(doctor);
+                doctorController.addDoctor(doctor);
                 message = "New doctor has been added";
                 parent.updateList(doctor, CrudOperations.CREATE);
             }else {
-                DoctorController.updateDoctor(doctor);
+                doctorController.updateDoctor(doctor);
                 message = "The doctor has been updated";
                 parent.updateList(doctor, CrudOperations.UPDATE);
             }

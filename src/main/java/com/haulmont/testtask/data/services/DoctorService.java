@@ -25,28 +25,7 @@ public class DoctorService extends Service<Doctor>{
 
 
 
-//    public int addDoctor (Doctor doctor){
-//        Session session = factory.openSession();
-//        int id = (int)session.save(doctor);
-//        session.close();
-//        return id;
-//
-//    }
-//    public  void updateDoctor(Doctor Doctor ){
-//        Session session = factory.openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.update(Doctor );
-//        transaction.commit();
-//        session.close();
-//    }
-//
-//    public  void deleteDoctor (Doctor Doctor ){
-//        Session session = factory.openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.delete(Doctor);
-//        transaction.commit();
-//        session.close();
-//    }
+
 
     public  List<Doctor> getDoctors(){
         Session session = factory.openSession();

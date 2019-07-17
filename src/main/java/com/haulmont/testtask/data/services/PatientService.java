@@ -26,40 +26,7 @@ public class PatientService extends Service<Patient>{
         return instance;
     }
 
-//    public Session openSession(){
-//        if(factory.getCurrentSession() == null)
-//            factory.openSession();
-//        return factory.getCurrentSession();
-//    }
-//
-//    public void closeSeccion(){
-//        if(factory.getCurrentSession() != null){
-//            factory.getCurrentSession().close();
-//        }
-//    }
 
-//    public  Patient addPatient(Patient patient){
-//        Session session = factory.openSession();
-//        int id = (int) session.save(patient);
-//        session.close();
-//        return getPatientById(id).get(0);
-//    }
-//    public void updatePatient(Patient patient){
-//        Session session = factory.openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.update(patient);
-//        transaction.commit();
-//        session.close();
-//    }
-//
-//    public  void deletePatient(Patient patient){
-//        Session session = factory.openSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.delete(patient);
-//        transaction.commit();
-//        session.close();
-//
-//    }
 
     public List<Patient> getPatients(){
         Session session = factory.openSession();
