@@ -53,7 +53,7 @@ public class StatisticComponent extends HorizontalLayout {
 //        return statisticComponent;
 //    }
 
-    public void setDoctorToPanel(String fullname, int signed, double oftotal, int valid){
+    public void setDoctorToPanel(String fullname, int signed, int oftotal, int valid){
         this.fullname.setCaption(fullname);
         this.signed.setCaption(String.valueOf(signed));
         this.ofTotal.setCaption(String.valueOf(oftotal) + "%");

@@ -11,6 +11,7 @@ import com.haulmont.testtask.entities.Prescription;
 import com.haulmont.testtask.entities.Priority;
 import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
@@ -83,6 +84,14 @@ public class DoctorForm extends Composite implements View {
     private void initButtonListeners(){
         save.addClickListener(event ->{
             Doctor doctor = binder.getBean();
+            BinderValidationStatus status = binder.validate();
+
+            if(status.hasErrors()){
+                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                notif.setPosition(Position.BOTTOM_RIGHT);
+                notif.show(Page.getCurrent());
+                return;
+            }
             String message = "";
             if(doctor.getId() == 0) {
                 doctorController.addDoctor(doctor);

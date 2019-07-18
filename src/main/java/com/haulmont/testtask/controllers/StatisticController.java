@@ -42,7 +42,7 @@ public class StatisticController {
         int byDoctor = (int) signedByDoctor.count();
         double quotient = (prescriptions.size()) != 0 ? (double)byDoctor/prescriptions.size() : 0;
         int  valid = (int) prescriptions.stream().filter(combinedPredicate).count();
-        int total = (int) Math.ceil(quotient*100);
+        int total = (int) Math.round(quotient*100);
         component.setDoctorToPanel(doctor.toString(), byDoctor, total, valid);
     }
 

@@ -72,7 +72,12 @@ public class PatientForm extends Composite implements View {
     private void initButtonListeners(){
         save.addClickListener(event ->{
             BinderValidationStatus<Patient> status = binder.validate();
-            if(status.hasErrors()) return;
+            if(status.hasErrors()){
+                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                notif.setPosition(Position.BOTTOM_RIGHT);
+                notif.show(Page.getCurrent());
+                return;
+            }
 
             Patient patient = binder.getBean();
             boolean a = patient.getFirstName().matches("[а-яА-я]+");

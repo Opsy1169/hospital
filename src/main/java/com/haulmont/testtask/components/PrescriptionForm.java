@@ -12,11 +12,15 @@ import com.haulmont.testtask.entities.Prescription;
 import com.haulmont.testtask.entities.Priority;
 import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.*;
+
+import java.time.LocalDate;
+import java.util.Objects;
 //import org.vaadin.inputmask.InputMask;
 
 public class PrescriptionForm extends Composite implements View {
@@ -40,13 +44,15 @@ public class PrescriptionForm extends Composite implements View {
 //        InputMask mask = new InputMask("\\d{0, 3}");
 //        mask.setRegexMask(true);
 //        mask.extend(validity);
+        dateField.setDefaultValue(LocalDate.now());
         FormLayout layout =  new FormLayout();
         patientComboBox.setItems(patientController.getAllPatients());
         doctorComboBox.setItems(doctorController.getAllDoctors());
         priorityComboBox.setItems(Priority.values());
+        setUpBinder();
 
         initButtonListeners();
-        setUpBinder();
+
         HorizontalLayout buttons = new HorizontalLayout(save, cancel);
         layout.addComponents(description, patientComboBox, doctorComboBox, dateField, validity, priorityComboBox, buttons);
         setCompositionRoot(layout);
@@ -59,11 +65,15 @@ public class PrescriptionForm extends Composite implements View {
 //                        (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
 //                "Second name should be longer than two symbols and contain only Russian or English letters")
 //                .bind(Prescription::getDescription, Prescription::setDescription);
-        binder.bind(description, Prescription::getDescription, Prescription::setDescription);
-        binder.bind(patientComboBox, Prescription::getPatient, Prescription::setPatient);
-        binder.bind(doctorComboBox, Prescription::getDoctor, Prescription::setDoctor);
+//        binder.bind(description, Prescription::getDescription, Prescription::setDescription);
+//        binder.bind(patientComboBox, Prescription::getPatient, Prescription::setPatient);
+//        binder.bind(doctorComboBox, Prescription::getDoctor, Prescription::setDoctor);
         binder.bind(dateField, Prescription::getBeginDate, Prescription::setBeginDate);
-        binder.bind(priorityComboBox, Prescription::getPriority, Prescription::setPriority);
+//        binder.bind(priorityComboBox, Prescription::getPriority, Prescription::setPriority);
+        binder.forField(description).withValidator(description -> description.length() > 0, "Must not be empty").bind(Prescription::getDescription, Prescription::setDescription);
+        binder.forField(doctorComboBox).withValidator(Objects::nonNull, "Must  be selected").bind(Prescription::getDoctor, Prescription::setDoctor);
+        binder.forField(patientComboBox).withValidator(Objects::nonNull, "Must be selected").bind(Prescription::getPatient, Prescription::setPatient);
+        binder.forField(priorityComboBox).withValidator(Objects::nonNull, "Must be selected").bind(Prescription::getPriority, Prescription::setPriority);
         binder.forField(validity)
                 .withConverter(new StringToIntegerConverter("Must be integer value"))
                 .withValidator(validity -> validity.toString().length() <= 3 && validity > 0, "Prescription should be positive and is valid for no longer than 999 days")
@@ -83,6 +93,14 @@ public class PrescriptionForm extends Composite implements View {
         save.addClickListener(event ->{
             Prescription prescription = binder.getBean();
             String message = "";
+            BinderValidationStatus status = binder.validate();
+
+            if(status.hasErrors()){
+                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                notif.setPosition(Position.BOTTOM_RIGHT);
+                notif.show(Page.getCurrent());
+                return;
+            }
             if(prescription.getId() == 0){
                 prescriptionController.addPrescription(prescription);
                 message = "New prescription has been added";
