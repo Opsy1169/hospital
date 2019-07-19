@@ -62,7 +62,7 @@ public class Doctor {
 
     @Override
     public String toString() {
-        return getFirstName() + " " + getSecondName() + " " + getThirdName();
+        return getSecondName() + " " + getFirstName().charAt(0) + ". " + getThirdName().charAt(0) + ".";
     }
 
     @Override

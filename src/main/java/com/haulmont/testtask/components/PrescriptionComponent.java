@@ -29,7 +29,10 @@ public class PrescriptionComponent extends Composite implements View {
     private ComboBox<Patient> patientFilter = new ComboBox<>("Filter by patient");
     private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
     private TextField descriptionFilter = new TextField("Filter by description");
-    private TextField a = new TextField();
+
+    private Button applyFilterButton = new Button("Apply");
+//    private Button clearFilters = new Button("", VaadinIcons.CROSS_CUTLERY);
+//    private VerticalLayout applyLayout = new VerticalLayout(new Label(""), applyFilterButton);
     private PatientController patientController = PatientController.getInstance();
     private DoctorController doctorController = DoctorController.getInstance();
     private PrescriptionController prescriptionController = PrescriptionController.getInstance();
@@ -46,8 +49,11 @@ public class PrescriptionComponent extends Composite implements View {
         prescriptionGrid.removeColumn("id");
 
         HorizontalLayout buttonLayout = new HorizontalLayout( add, delete, edit);
-        HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter);
+        HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter, applyFilterButton);
+        filterLayout.setComponentAlignment(applyFilterButton, Alignment.BOTTOM_CENTER);
+//        filterLayout.setComponentAlignment(clearFilters, Alignment.BOTTOM_CENTER);
         HorizontalLayout headerLayout = new HorizontalLayout(filterLayout, buttonLayout);
+        headerLayout.setExpandRatio(filterLayout, 0.7f);
         headerLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
         headerLayout.setWidth("100%");
 
@@ -61,6 +67,7 @@ public class PrescriptionComponent extends Composite implements View {
         subContent.addComponent(prescriptionForm);
         subContent.setWidth("350px");
         subWindow.center();
+        subWindow.setModal(true);
 
 
         subWindow.addCloseListener(event -> prescriptionForm.unbindPrescription());
@@ -101,17 +108,18 @@ public class PrescriptionComponent extends Composite implements View {
     }
 
     private void initFilterListeners(){
-        patientFilter.addValueChangeListener(event -> {
-            filterGrid();
-        });
-
-        priorityFilter.addValueChangeListener( event -> {
-            filterGrid();
-        });
-
-        descriptionFilter.addValueChangeListener(event -> {
-            filterGrid();
-        });
+        applyFilterButton.addClickListener(clickEvent -> filterGrid());
+//        patientFilter.addValueChangeListener(event -> {
+//            filterGrid();
+//        });
+//
+//        priorityFilter.addValueChangeListener( event -> {
+//            filterGrid();
+//        });
+//
+//        descriptionFilter.addValueChangeListener(event -> {
+//            filterGrid();
+//        });
     }
 
     private void initButtonListeners(){

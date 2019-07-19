@@ -47,6 +47,7 @@ public class PatientComponent extends Composite implements View {
         VerticalLayout subContent = new VerticalLayout(patientForm);
         subContent.setWidth("350px");
         window.setContent(subContent);
+        window.setModal(true);
 
         window.addCloseListener(closeEvent -> patientForm.unbindPatient());
 

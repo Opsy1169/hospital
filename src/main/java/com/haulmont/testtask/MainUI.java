@@ -59,7 +59,7 @@ public class MainUI extends UI {
 //        tabSheet.addFocusListener(focusEvent -> System.out.println("focused"));
 //        tabSheet.addBlurListener(blurEvent -> System.out.println("blur"));
         tabSheet.addSelectedTabChangeListener(selectedTabChangeEvent -> {
-            if (tabSheet.getSelectedTab() instanceof DoctorComponent){
+            if (tabSheet.getSelectedTab() instanceof PrescriptionComponent ||  tabSheet.getSelectedTab() instanceof PatientComponent){
                 doctorComponent.hideStatistic();
             }
         });

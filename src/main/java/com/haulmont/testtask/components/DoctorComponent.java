@@ -28,7 +28,9 @@ public class DoctorComponent extends Composite implements View {
     private Button add = new Button("", VaadinIcons.PLUS);
     private Button delete = new Button("", VaadinIcons.TRASH);
     private Button edit = new Button("", VaadinIcons.EDIT);
+    private Button showStatisticButton = new Button("Show statistic");
     private Window subWindow = new Window("");
+    private Window statisticSubWindow = new Window("Statistic");
 //    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
     private StatisticComponent statisticLayout = new StatisticComponent();
 
@@ -46,7 +48,7 @@ public class DoctorComponent extends Composite implements View {
         doctorGrid.setColumnOrder("secondName", "firstName",  "thirdName", "specialization");
         doctorGrid.removeColumn("id");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
+        HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit, showStatisticButton);
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
 //        doctorGrid.setHeight("1200px");
 //        doctorGrid.setSizeFull();
@@ -58,7 +60,16 @@ public class DoctorComponent extends Composite implements View {
 
         subcontent.addComponent(doctorForm);
         subWindow.setContent(subcontent);
+        subWindow.setModal(true);
         subcontent.setWidth("350px");
+
+        VerticalLayout statisticContent = new VerticalLayout();
+        statisticContent.addComponent(statisticLayout);
+        statisticSubWindow.setContent(statisticContent);
+        statisticSubWindow.setResizable(false);
+        statisticSubWindow.center();
+//        statisticContent.setWidth("500px");
+//        statisticContent.setSizeFull();
 
         subWindow.addCloseListener(event -> {
             doctorForm.unbindDoctor();
@@ -71,26 +82,41 @@ public class DoctorComponent extends Composite implements View {
 
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
-        mainContent.addComponent(statisticLayout);
-        statisticLayout.setVisible(false);
-        doctorGrid.asSingleSelect().addValueChangeListener(event -> {
+//        mainContent.addComponent(statisticLayout);
+//        statisticLayout.setVisible(false);
+        showStatisticButton.addClickListener(clickEvent -> {
             Doctor doctor = doctorGrid.asSingleSelect().getValue();
-            if(doctor != null) {
-                statisticController.setDoctor(doctor, statisticLayout);
-//                statisticLayout.setDoctor(doctor);
-                statisticLayout.setVisible(true);
-
-            }else{
-                statisticLayout.setVisible(false);
+            if(doctor == null){
+                Notification notification = new Notification("", "Please, select a doctor first", Notification.Type.WARNING_MESSAGE);
+                notification.setPosition(Position.BOTTOM_RIGHT);
+                notification.show(Page.getCurrent());
+                return;
             }
-
+            statisticController.setDoctor(doctor, statisticLayout);
+            if(statisticSubWindow.isAttached()) return;
+            this.getUI().addWindow(statisticSubWindow);
         });
+//        doctorGrid.asSingleSelect().addValueChangeListener(event -> {
+//            Doctor doctor = doctorGrid.asSingleSelect().getValue();
+//            if(doctor != null) {
+//                statisticController.setDoctor(doctor, statisticLayout);
+////                statisticLayout.setDoctor(doctor);
+//                this.getUI().addWindow(statisticSubWindow);
+////                statisticLayout.setVisible(true);
+//
+//            }else{
+////                statisticLayout.setVisible(false);
+//            }
+//
+//        });
 
 
     }
 
     public void hideStatistic(){
-        statisticLayout.setVisible(false);
+        if(statisticSubWindow.isAttached()) {
+            statisticSubWindow.close();
+        }
     }
 
     private void initButtonListenters(){
