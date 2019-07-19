@@ -21,18 +21,16 @@ import com.vaadin.ui.*;
 
 public class PrescriptionComponent extends Composite implements View {
 
-    private Grid<Prescription> prescriptionGrid = new Grid<>(Prescription.class);
+    private Grid<Prescription> prescriptionGrid = new Grid<>();
     private Window subWindow = new Window("");
-    private Button add = new Button("", VaadinIcons.PLUS);
-    private Button delete = new Button("", VaadinIcons.TRASH);
-    private Button edit = new Button("", VaadinIcons.EDIT);
-    private ComboBox<Patient> patientFilter = new ComboBox<>("Filter by patient");
-    private ComboBox<Priority> priorityFilter = new ComboBox<>("Filter by priority");
-    private TextField descriptionFilter = new TextField("Filter by description");
+    private Button add = new Button("Добавить");
+    private Button delete = new Button("Изменить");
+    private Button edit = new Button("Удалить");
+    private ComboBox<Patient> patientFilter = new ComboBox<>("Фильтр по пациенту");
+    private ComboBox<Priority> priorityFilter = new ComboBox<>("Фильтр по приоритету");
+    private TextField descriptionFilter = new TextField("Фильтр по описанию");
 
-    private Button applyFilterButton = new Button("Apply");
-//    private Button clearFilters = new Button("", VaadinIcons.CROSS_CUTLERY);
-//    private VerticalLayout applyLayout = new VerticalLayout(new Label(""), applyFilterButton);
+    private Button applyFilterButton = new Button("Применить");
     private PatientController patientController = PatientController.getInstance();
     private DoctorController doctorController = DoctorController.getInstance();
     private PrescriptionController prescriptionController = PrescriptionController.getInstance();
@@ -45,13 +43,17 @@ public class PrescriptionComponent extends Composite implements View {
 
     public PrescriptionComponent(){
 
-        prescriptionGrid.setColumnOrder("description", "patient", "doctor", "beginDate", "validityInDays", "priority");
-        prescriptionGrid.removeColumn("id");
+
+        prescriptionGrid.addColumn(Prescription::getDescription).setCaption("Описание");
+        prescriptionGrid.addColumn(Prescription::getPatient).setCaption("Пациент");
+        prescriptionGrid.addColumn(Prescription::getDoctor).setCaption("Доктор");
+        prescriptionGrid.addColumn(Prescription::getBeginDate).setCaption("Дата создания");
+        prescriptionGrid.addColumn(Prescription::getValidityInDays).setCaption("Срок действия");
+        prescriptionGrid.addColumn(Prescription::getPriority).setCaption("Приоритет");
 
         HorizontalLayout buttonLayout = new HorizontalLayout( add, delete, edit);
         HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter, applyFilterButton);
         filterLayout.setComponentAlignment(applyFilterButton, Alignment.BOTTOM_CENTER);
-//        filterLayout.setComponentAlignment(clearFilters, Alignment.BOTTOM_CENTER);
         HorizontalLayout headerLayout = new HorizontalLayout(filterLayout, buttonLayout);
         headerLayout.setExpandRatio(filterLayout, 0.7f);
         headerLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
@@ -68,6 +70,7 @@ public class PrescriptionComponent extends Composite implements View {
         subContent.setWidth("350px");
         subWindow.center();
         subWindow.setModal(true);
+        subWindow.setResizable(false);
 
 
         subWindow.addCloseListener(event -> prescriptionForm.unbindPrescription());
@@ -77,7 +80,6 @@ public class PrescriptionComponent extends Composite implements View {
 
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, prescriptionGrid);
-//        mainContent.setComponentAlignment(headerLayout, Alignment.MIDDLE_RIGHT);
         prescriptionGrid.setDataProvider(prescriptionProvider);
         mainContent.setSizeFull();
         mainContent.setExpandRatio(prescriptionGrid, 0.8f);
@@ -109,17 +111,6 @@ public class PrescriptionComponent extends Composite implements View {
 
     private void initFilterListeners(){
         applyFilterButton.addClickListener(clickEvent -> filterGrid());
-//        patientFilter.addValueChangeListener(event -> {
-//            filterGrid();
-//        });
-//
-//        priorityFilter.addValueChangeListener( event -> {
-//            filterGrid();
-//        });
-//
-//        descriptionFilter.addValueChangeListener(event -> {
-//            filterGrid();
-//        });
     }
 
     private void initButtonListeners(){
@@ -127,7 +118,7 @@ public class PrescriptionComponent extends Composite implements View {
             Prescription prescription = new Prescription();
             prescriptionForm.setPrescriptionToForm(prescription);
             subWindow.center();
-            subWindow.setCaption("Add new prescription");
+            subWindow.setCaption("Добавить новый рецепт");
             this.getUI().getUI().addWindow(subWindow);
         });
         edit.addClickListener(buttonClickEvent -> {
@@ -135,7 +126,7 @@ public class PrescriptionComponent extends Composite implements View {
             if( prescription != null) {
                 prescriptionForm.setPrescriptionToForm(prescription);
                 subWindow.center();
-                subWindow.setCaption("Edit prescription");
+                subWindow.setCaption("Изменить рецепт");
                 this.getUI().getUI().addWindow(subWindow);
             }
         });
@@ -148,12 +139,12 @@ public class PrescriptionComponent extends Composite implements View {
                 try {
                     prescriptionController.deletePrescription(prescription);
                     updateList(prescription, CrudOperations.DELETE);
-                    message = "Prescription has been deleted";
+                    message = "Рецепт был удален";
                     notif = new Notification("", message);
                     notif.setPosition(Position.BOTTOM_RIGHT);
                     notif.show(Page.getCurrent());
                 } catch (Exception e){
-                    message = "Something went wrong";
+                    message = "При удалении произошла ошибка";
                     notif = new Notification("", message, Notification.Type.WARNING_MESSAGE);
                     notif.setPosition(Position.BOTTOM_RIGHT);
                     notif.show(Page.getCurrent());
@@ -162,22 +153,7 @@ public class PrescriptionComponent extends Composite implements View {
         });
     }
 
-//    public void updateList(Prescription prescription, CrudOperations operation){
-//        switch (operation){
-//            case CREATE:
-//                provider.getItems().add(prescription);
-//                provider.refreshAll();
-//                break;
-//            case UPDATE:
-////                provider.refreshItem(prescription);
-//                provider.refreshAll();
-//                break;
-//            case DELETE:
-//                provider.getItems().remove(prescription);
-//                provider.refreshAll();
-//                break;
-//        }
-//    }
+
 
     public void updateList(Object o, CrudOperations operation ){
         ListDataProvider provider = null;
@@ -192,15 +168,12 @@ public class PrescriptionComponent extends Composite implements View {
         }
         switch (operation){
             case CREATE:
-//                provider.getItems().add(o);
                 provider.refreshAll();
                 break;
             case UPDATE:
-//                provider.refreshItem(prescription);
                 provider.refreshAll();
                 break;
             case DELETE:
-//                provider.getItems().remove(o);
                 provider.refreshAll();
                 break;
         }

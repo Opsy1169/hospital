@@ -77,9 +77,5 @@ public class Doctor {
                 Objects.equals(specialization, doctor.specialization);
     }
 
-    @Override
-    public int hashCode() {
 
-        return Objects.hash(id, firstName, secondName, thirdName, specialization);
-    }
 }

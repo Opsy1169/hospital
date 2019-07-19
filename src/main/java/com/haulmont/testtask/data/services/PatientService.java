@@ -12,7 +12,7 @@ import java.util.List;
 public class PatientService extends Service<Patient>{
 
     private static SessionFactory factory = HibernateUtil.getSessionFactory();
-//    private static Session session = factory.openSession();
+
     private static PatientService instance;
 
     private PatientService(){

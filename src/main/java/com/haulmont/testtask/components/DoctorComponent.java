@@ -24,20 +24,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DoctorComponent extends Composite implements View {
-    private Grid<Doctor> doctorGrid = new Grid<>(Doctor.class);
-    private Button add = new Button("", VaadinIcons.PLUS);
-    private Button delete = new Button("", VaadinIcons.TRASH);
-    private Button edit = new Button("", VaadinIcons.EDIT);
-    private Button showStatisticButton = new Button("Show statistic");
+    private Grid<Doctor> doctorGrid = new Grid<>();
+    private Button add = new Button("Добавить");
+    private Button delete = new Button("Изменить");
+    private Button edit = new Button("Удалить");
+    private Button showStatisticButton = new Button("Статистика");
     private Window subWindow = new Window("");
-    private Window statisticSubWindow = new Window("Statistic");
-//    private VerticalLayout statisticLayout = new VerticalLayout(new ComboBox<Doctor>(), new Label("aasdasd"), new Label("qweqwe"));
+    private Window statisticSubWindow = new Window("Статистика");
     private StatisticComponent statisticLayout = new StatisticComponent();
 
-//    private PatientController patientController = PatientController.getInstance();
     private DoctorController doctorController = DoctorController.getInstance();
     private StatisticController statisticController = StatisticController.getInstance();
-//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
+
 
     ListDataProvider<Doctor> provider = DataProvider.ofCollection(doctorController.getAllDoctors());
 
@@ -45,13 +43,14 @@ public class DoctorComponent extends Composite implements View {
 
     public DoctorComponent(){
 
-        doctorGrid.setColumnOrder("secondName", "firstName",  "thirdName", "specialization");
-        doctorGrid.removeColumn("id");
+        doctorGrid.addColumn(Doctor::getSecondName).setCaption("Фамилия");
+        doctorGrid.addColumn(Doctor::getFirstName).setCaption("Имя");
+        doctorGrid.addColumn(Doctor::getThirdName).setCaption("Отчество");
+        doctorGrid.addColumn(Doctor::getSpecialization).setCaption("Специализация");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit, showStatisticButton);
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
-//        doctorGrid.setHeight("1200px");
-//        doctorGrid.setSizeFull();
+
         mainContent.setHeight("100%");
         mainContent.setExpandRatio(doctorGrid, 0.8f);
 
@@ -62,32 +61,30 @@ public class DoctorComponent extends Composite implements View {
         subWindow.setContent(subcontent);
         subWindow.setModal(true);
         subcontent.setWidth("350px");
+        subWindow.setResizable(false);
 
         VerticalLayout statisticContent = new VerticalLayout();
         statisticContent.addComponent(statisticLayout);
         statisticSubWindow.setContent(statisticContent);
         statisticSubWindow.setResizable(false);
         statisticSubWindow.center();
-//        statisticContent.setWidth("500px");
-//        statisticContent.setSizeFull();
+
 
         subWindow.addCloseListener(event -> {
             doctorForm.unbindDoctor();
         });
 
         initButtonListenters();
-//        mainContent.setSizeFull();
-        doctorGrid.setSizeFull();
 
+        doctorGrid.setSizeFull();
 
         doctorGrid.setDataProvider(provider);
         setCompositionRoot(mainContent);
-//        mainContent.addComponent(statisticLayout);
-//        statisticLayout.setVisible(false);
+
         showStatisticButton.addClickListener(clickEvent -> {
             Doctor doctor = doctorGrid.asSingleSelect().getValue();
             if(doctor == null){
-                Notification notification = new Notification("", "Please, select a doctor first", Notification.Type.WARNING_MESSAGE);
+                Notification notification = new Notification("", "Пожалуйста, выберите доктора", Notification.Type.WARNING_MESSAGE);
                 notification.setPosition(Position.BOTTOM_RIGHT);
                 notification.show(Page.getCurrent());
                 return;
@@ -96,19 +93,7 @@ public class DoctorComponent extends Composite implements View {
             if(statisticSubWindow.isAttached()) return;
             this.getUI().addWindow(statisticSubWindow);
         });
-//        doctorGrid.asSingleSelect().addValueChangeListener(event -> {
-//            Doctor doctor = doctorGrid.asSingleSelect().getValue();
-//            if(doctor != null) {
-//                statisticController.setDoctor(doctor, statisticLayout);
-////                statisticLayout.setDoctor(doctor);
-//                this.getUI().addWindow(statisticSubWindow);
-////                statisticLayout.setVisible(true);
-//
-//            }else{
-////                statisticLayout.setVisible(false);
-//            }
-//
-//        });
+
 
 
     }
@@ -123,7 +108,7 @@ public class DoctorComponent extends Composite implements View {
         add.addClickListener(clickEvent -> {
             doctorForm.setDoctorToForm(new Doctor());
             subWindow.center();
-            subWindow.setCaption("Add new doctor");
+            subWindow.setCaption("Добавить нового доктора");
             this.getUI().addWindow(subWindow);
         });
 
@@ -132,7 +117,7 @@ public class DoctorComponent extends Composite implements View {
             if(doctor != null) {
                 doctorForm.setDoctorToForm(doctor);
                 subWindow.center();
-                subWindow.setCaption("Edit doctor");
+                subWindow.setCaption("Изменить данные о докторе");
                 this.getUI().addWindow(subWindow);
             }
         });
@@ -145,12 +130,12 @@ public class DoctorComponent extends Composite implements View {
                 try {
                     doctorController.deleteDoctor(doctor);
                     updateList(doctor, CrudOperations.DELETE);
-                    message = "Doctor has been deleted";
+                    message = "Доктор был успешно удален";
                     notification = new Notification("", message);
                     notification.setPosition(Position.BOTTOM_RIGHT);
                     notification.show(Page.getCurrent());
                 } catch (Exception e){
-                    message = "Doctor can't be deleted due to prescriptions assigned by him";
+                    message = "Доктор не может быть удален из-за рецептов, подписанных им";
                     notification = new Notification("", message, Notification.Type.WARNING_MESSAGE);
                     notification.setPosition(Position.BOTTOM_RIGHT);
                     notification.show(Page.getCurrent());
@@ -162,14 +147,12 @@ public class DoctorComponent extends Composite implements View {
     public void updateList(Doctor doctor, CrudOperations operation){
         switch (operation){
             case CREATE:
-//                provider.getItems().add(doctor);
                 provider.refreshAll();
                 break;
             case UPDATE:
                 provider.refreshAll();
                 break;
             case DELETE:
-//                provider.getItems().remove(doctor);
                 provider.refreshAll();
                 break;
         }

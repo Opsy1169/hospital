@@ -63,15 +63,5 @@ public class PrescriptionService extends Service<Prescription>{
         return prescriptions;
     }
 
-    public void getPrescriptionByDate(){}
 
-    public void getPrescriptionGivenAfterDate(){}
-
-    public void getPrescriptionGivenBeforeDate(){}
-
-    public void getPrescriptionByDescription(){}
-
-    public void getExpiredPrescription(){ }
-
-    public void getValidPrescription(){}
 }

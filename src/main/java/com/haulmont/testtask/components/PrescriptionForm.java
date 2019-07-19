@@ -21,19 +21,19 @@ import com.vaadin.ui.*;
 
 import java.time.LocalDate;
 import java.util.Objects;
-//import org.vaadin.inputmask.InputMask;
+
 
 public class PrescriptionForm extends Composite implements View {
     private Binder<Prescription> binder = new Binder<>(Prescription.class);
 
-    private TextArea description = new TextArea("Description");
-    private ComboBox<Patient> patientComboBox = new ComboBox<>("Patient");
-    private ComboBox<Doctor> doctorComboBox = new ComboBox<>("Doctor");
-    private DateField dateField = new DateField("Begin date");
-    private TextField validity = new TextField("Validity");
-    private ComboBox<Priority> priorityComboBox = new ComboBox<>("Priority");
-    private Button save = new Button("save");
-    private Button cancel = new Button("cancel");
+    private TextArea description = new TextArea("Описание");
+    private ComboBox<Patient> patientComboBox = new ComboBox<>("Пациент");
+    private ComboBox<Doctor> doctorComboBox = new ComboBox<>("Доктор");
+    private DateField dateField = new DateField("Дата создания ");
+    private TextField validity = new TextField("Срок действия");
+    private ComboBox<Priority> priorityComboBox = new ComboBox<>("Приоритет");
+    private Button save = new Button("Oк");
+    private Button cancel = new Button("Отменить");
     private PrescriptionComponent parent;
     private PatientController patientController = PatientController.getInstance();
     private DoctorController doctorController = DoctorController.getInstance();
@@ -41,9 +41,7 @@ public class PrescriptionForm extends Composite implements View {
 
     public PrescriptionForm(PrescriptionComponent parent) {
         this.parent = parent;
-//        InputMask mask = new InputMask("\\d{0, 3}");
-//        mask.setRegexMask(true);
-//        mask.extend(validity);
+
         dateField.setDefaultValue(LocalDate.now());
         FormLayout layout =  new FormLayout();
         patientComboBox.setItems(patientController.getAllPatients());
@@ -55,28 +53,22 @@ public class PrescriptionForm extends Composite implements View {
 
         HorizontalLayout buttons = new HorizontalLayout(save, cancel);
         layout.addComponents(description, patientComboBox, doctorComboBox, dateField, validity, priorityComboBox, buttons);
+
         setCompositionRoot(layout);
 
 
     }
 
     private void setUpBinder(){
-//        binder.forField(description).withValidator(second -> ((second.length() >= 2) &&
-//                        (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
-//                "Second name should be longer than two symbols and contain only Russian or English letters")
-//                .bind(Prescription::getDescription, Prescription::setDescription);
-//        binder.bind(description, Prescription::getDescription, Prescription::setDescription);
-//        binder.bind(patientComboBox, Prescription::getPatient, Prescription::setPatient);
-//        binder.bind(doctorComboBox, Prescription::getDoctor, Prescription::setDoctor);
+
         binder.bind(dateField, Prescription::getBeginDate, Prescription::setBeginDate);
-//        binder.bind(priorityComboBox, Prescription::getPriority, Prescription::setPriority);
-        binder.forField(description).withValidator(description -> description.length() > 0, "Must not be empty").bind(Prescription::getDescription, Prescription::setDescription);
-        binder.forField(doctorComboBox).withValidator(Objects::nonNull, "Must  be selected").bind(Prescription::getDoctor, Prescription::setDoctor);
-        binder.forField(patientComboBox).withValidator(Objects::nonNull, "Must be selected").bind(Prescription::getPatient, Prescription::setPatient);
-        binder.forField(priorityComboBox).withValidator(Objects::nonNull, "Must be selected").bind(Prescription::getPriority, Prescription::setPriority);
+        binder.forField(description).withValidator(description -> description.length() > 0, "Поле должно быть заполнено").bind(Prescription::getDescription, Prescription::setDescription);
+        binder.forField(doctorComboBox).withValidator(Objects::nonNull, "Значение должно быть выбрано").bind(Prescription::getDoctor, Prescription::setDoctor);
+        binder.forField(patientComboBox).withValidator(Objects::nonNull, "Значение должно быть выбрано").bind(Prescription::getPatient, Prescription::setPatient);
+        binder.forField(priorityComboBox).withValidator(Objects::nonNull, "Значение должно быть выбрано").bind(Prescription::getPriority, Prescription::setPriority);
         binder.forField(validity)
-                .withConverter(new StringToIntegerConverter("Must be integer value"))
-                .withValidator(validity -> validity.toString().length() <= 3 && validity > 0, "Prescription should be positive and is valid for no longer than 999 days")
+                .withConverter(new StringToIntegerConverter("Должно быть целочисленным значением"))
+                .withValidator(validity -> validity.toString().length() <= 3 && validity > 0, "Срое действия должен быть положительным и длиться меньше 999 дней")
                 .bind(Prescription::getValidityInDays, Prescription::setValidityInDays);
 
 
@@ -96,18 +88,18 @@ public class PrescriptionForm extends Composite implements View {
             BinderValidationStatus status = binder.validate();
 
             if(status.hasErrors()){
-                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                Notification notif = new Notification("", "Некоторые данные некорректны", Notification.Type.WARNING_MESSAGE);
                 notif.setPosition(Position.BOTTOM_RIGHT);
                 notif.show(Page.getCurrent());
                 return;
             }
             if(prescription.getId() == 0){
                 prescriptionController.addPrescription(prescription);
-                message = "New prescription has been added";
+                message = "Рецепт был успешно добавлен";
                 parent.updateList(prescription, CrudOperations.CREATE);
             }else{
                 prescriptionController.updatePrescription(prescription);
-                message = "The prescription has been updated";
+                message = "Рецепт был успешно обновлен";
                 parent.updateList(prescription, CrudOperations.UPDATE);
             }
             Notification notif = new Notification("", message);

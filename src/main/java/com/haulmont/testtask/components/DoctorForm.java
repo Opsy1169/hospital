@@ -21,25 +21,24 @@ import com.vaadin.ui.*;
 public class DoctorForm extends Composite implements View {
     private Binder<Doctor> binder = new Binder<>(Doctor.class);
 
-    private TextField secondName = new TextField("Second name");
-    private TextField firstName = new TextField("First name");
-    private TextField patronymic = new TextField("Patronymic");
-    private TextField specialization = new TextField("Specialization");
+    private TextField secondName = new TextField("Фамилия");
+    private TextField firstName = new TextField("Имя");
+    private TextField patronymic = new TextField("Отчество");
+    private TextField specialization = new TextField("Специализация");
 
-    private Button save = new Button("Save");
-    private Button cancel = new Button("Cancel");
+    private Button save = new Button("Oк");
+    private Button cancel = new Button("Отменить");
 
     private DoctorComponent parent;
 
-//    private PatientController patientController = PatientController.getInstance();
     private DoctorController doctorController = DoctorController.getInstance();
-//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
 
     public DoctorForm(DoctorComponent parent) {
         this.parent = parent;
         FormLayout layout =  new FormLayout();
         HorizontalLayout buttons = new HorizontalLayout(save, cancel);
         layout.addComponents(secondName, firstName, patronymic, specialization, buttons);
+        layout.setComponentAlignment(buttons, Alignment.MIDDLE_LEFT);
         setUpBinder();
         initButtonListeners();
         setCompositionRoot(layout);
@@ -54,20 +53,20 @@ public class DoctorForm extends Composite implements View {
         binder.bind(specialization, Doctor::getSpecialization, Doctor::setSpecialization);
 
         binder.forField(secondName).withValidator(second -> ((second.length() >= 2) &&
-                        (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
-                "Second name should be longer than two symbols and contain only Russian or English letters")
+                        (second.trim().matches("[А-Яа-я]+") || second.trim().matches("[a-zA-Z]+"))),
+                "Фамилия должна быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Doctor::getSecondName, Doctor::setSecondName);
         binder.forField(firstName).withValidator(first -> ((first.length() >= 2) &&
-                        (first.matches("[А-Яа-я]+") || first.matches("[a-zA-Z]+"))),
-                "First name should be longer than two symbols and contain only Russian or English letters")
+                        (first.trim().matches("[А-Яа-я]+") || first.trim().matches("[a-zA-Z]+"))),
+                "Имя должно быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Doctor::getFirstName, Doctor::setFirstName);
         binder.forField(patronymic).withValidator(third -> ((third.length() >= 2) &&
-                        (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
-                "Third name should be longer than two symbols and contain only Russian or English letters")
+                        (third.trim().matches("[А-Яа-я]+") || third.trim().matches("[a-zA-Z]+"))),
+                "Отчество должно быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Doctor::getThirdName, Doctor::setThirdName);
         binder.forField(specialization).withValidator(third -> ((third.length() >= 2) &&
-                        (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
-                "Specialization should be longer than two symbols and contain only Russian or English letters")
+                        (third.trim().matches("[А-Яа-я]+") || third.trim().matches("[a-zA-Z]+"))),
+                "Специализация должна быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Doctor::getSpecialization, Doctor::setSpecialization);
 
 
@@ -85,9 +84,10 @@ public class DoctorForm extends Composite implements View {
         save.addClickListener(event ->{
             Doctor doctor = binder.getBean();
             BinderValidationStatus status = binder.validate();
+            doctor = trimDoctorFields(doctor);
 
             if(status.hasErrors()){
-                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                Notification notif = new Notification("", "Некоторые данные некорректны", Notification.Type.WARNING_MESSAGE);
                 notif.setPosition(Position.BOTTOM_RIGHT);
                 notif.show(Page.getCurrent());
                 return;
@@ -95,11 +95,11 @@ public class DoctorForm extends Composite implements View {
             String message = "";
             if(doctor.getId() == 0) {
                 doctorController.addDoctor(doctor);
-                message = "New doctor has been added";
+                message = "Новый доктор был успешно добавлен";
                 parent.updateList(doctor, CrudOperations.CREATE);
             }else {
                 doctorController.updateDoctor(doctor);
-                message = "The doctor has been updated";
+                message = "Доктор был успешно изменен";
                 parent.updateList(doctor, CrudOperations.UPDATE);
             }
             Notification notif = new Notification("", message);
@@ -114,6 +114,14 @@ public class DoctorForm extends Composite implements View {
             unbindDoctor();
             window.close();
         });
+    }
+
+    private Doctor trimDoctorFields(Doctor doctor){
+        doctor.setFirstName(doctor.getFirstName().trim());
+        doctor.setSecondName(doctor.getSecondName().trim());
+        doctor.setThirdName(doctor.getThirdName().trim());
+        doctor.setSpecialization(doctor.getSpecialization().trim());
+        return doctor;
     }
 
 }

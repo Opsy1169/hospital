@@ -37,10 +37,6 @@ import static com.sun.javafx.fxml.expression.Expression.add;
 @Theme(ValoTheme.THEME_NAME)
 public class MainUI extends UI {
 
-//
-//    private Grid<Customer> grid = new Grid<>(Customer.class);
-//    private TextField filterText = new TextField();
-//    private CustomerForm form = new CustomerForm(this);
     private PrescriptionComponent prescriptionComponent = new PrescriptionComponent();
     private PatientComponent patientComponent = new PatientComponent();
     private DoctorComponent doctorComponent = new DoctorComponent();
@@ -51,19 +47,17 @@ public class MainUI extends UI {
 
         VerticalLayout mainLayout = new VerticalLayout();
         TabSheet tabSheet = new TabSheet();
-        tabSheet.addTab(patientComponent, "Patients");
-        tabSheet.addTab(doctorComponent, "Doctors");
-        tabSheet.addTab(prescriptionComponent, "Prescriptions");
+        tabSheet.addTab(patientComponent, "Пациенты");
+        tabSheet.addTab(doctorComponent, "Доктора");
+        tabSheet.addTab(prescriptionComponent, "Рецепты");
         mainLayout.addComponent(tabSheet);
-//        tabSheet.addComponentDetachListener(componentDetachEvent -> System.out.println("detach"));
-//        tabSheet.addFocusListener(focusEvent -> System.out.println("focused"));
-//        tabSheet.addBlurListener(blurEvent -> System.out.println("blur"));
+
         tabSheet.addSelectedTabChangeListener(selectedTabChangeEvent -> {
             if (tabSheet.getSelectedTab() instanceof PrescriptionComponent ||  tabSheet.getSelectedTab() instanceof PatientComponent){
                 doctorComponent.hideStatistic();
             }
         });
-//        component.addContextClickListener(event -> System.out.println("clicked"));
+
 
 
         tabSheet.setSizeFull();
@@ -75,41 +69,5 @@ public class MainUI extends UI {
     }
 
 
-    public void test() {
-//        Doctor doctor = new Doctor();
-//        doctor.setFirstName("asdasdas");
-//        doctor.setSecondName("qweqweqwe");
-//        DoctorService.addDoctor(doctor);
-//        System.out.println(PatientService.getPatients());
-//        Patient patient =  PatientService.getPatientById(2).get(0);
-//        System.out.println(patient);
-//        patient.setPhoneNumber(patient.getPhoneNumber() + "228");
-//        PatientService.updatePatient(patient);
-//        patient = PatientService.getPatientById(2).get(0);
-//        System.out.println(patient);
-//        System.out.println(PatientService.getPatientByFullName("IVANOV","IVAN","IVANOVICH"));
-//        Prescription prescription = PrescriptionService.getPrescriptionById(0).get(0);
-//        System.out.println(prescription);
-//        Patient first = PatientService.getPatientById(0).get(0);
-//        PrescriptionService.deletePrescription(prescription);
-//        List<Prescription> prescriptionList = PrescriptionService.getPrescriptions();
-//        System.out.println(prescriptionList.size());
-//        PatientService.deletePatient(first);
-//        prescription = PrescriptionService.getPrescriptionById(0).get(0);
-//        System.out.println(prescription);
-//        System.out.println(PrescriptionService.getPrescriptionById(0));
-
-    }
-
-
-
-    private void hibernate(){
-
-    }
-
-
-    private void printTable() {
-
-    }
 
 }

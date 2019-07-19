@@ -5,6 +5,7 @@ import com.haulmont.testtask.controllers.DoctorController;
 import com.haulmont.testtask.controllers.PatientController;
 import com.haulmont.testtask.controllers.PrescriptionController;
 import com.haulmont.testtask.data.services.PatientService;
+import com.haulmont.testtask.entities.Doctor;
 import com.haulmont.testtask.entities.Patient;
 import com.haulmont.testtask.util.CrudOperations;
 import com.vaadin.data.provider.DataProvider;
@@ -17,22 +18,22 @@ import com.vaadin.ui.*;
 
 public class PatientComponent extends Composite implements View {
 
-    private Grid<Patient> patientGrid = new Grid<>(Patient.class);
+    private Grid<Patient> patientGrid = new Grid<>();
     private Window window = new Window("");
-    Button add = new Button("", VaadinIcons.PLUS);
-    Button delete = new Button("", VaadinIcons.TRASH);
-    Button edit = new Button("", VaadinIcons.EDIT);
+    Button add = new Button("Добавить");
+    Button delete = new Button("Изменить");
+    Button edit = new Button("Удалить");
     PatientForm patientForm = new PatientForm(this);
 
     private PatientController patientController = PatientController.getInstance();
-//    private DoctorController doctorController = DoctorController.getInstance();
-//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
     ListDataProvider<Patient> provider = DataProvider.ofCollection(patientController.getAllPatients());
 
     public PatientComponent(){
 
-        patientGrid.setColumnOrder("secondName", "firstName",  "thirdName", "phoneNumber");
-        patientGrid.removeColumn("id");
+        patientGrid.addColumn(Patient::getSecondName).setCaption("Фамилия");
+        patientGrid.addColumn(Patient::getFirstName).setCaption("Имя");
+        patientGrid.addColumn(Patient::getThirdName).setCaption("Отчество");
+        patientGrid.addColumn(Patient::getPhoneNumber).setCaption("Номер телефона");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
 
@@ -48,6 +49,7 @@ public class PatientComponent extends Composite implements View {
         subContent.setWidth("350px");
         window.setContent(subContent);
         window.setModal(true);
+        window.setResizable(false);
 
         window.addCloseListener(closeEvent -> patientForm.unbindPatient());
 
@@ -56,7 +58,6 @@ public class PatientComponent extends Composite implements View {
 
 
         patientGrid.setDataProvider(provider);
-//        patientGrid.setItems(PatientService.getPatients());
         setCompositionRoot(mainContent);
 
     }
@@ -65,7 +66,7 @@ public class PatientComponent extends Composite implements View {
         add.addClickListener(event -> {
             patientForm.setPatientToForm(new Patient());
             window.center();
-            window.setCaption("Add new patient");
+            window.setCaption("Добавить нового пациент");
             this.getUI().getUI().addWindow(window);
         });
 
@@ -74,7 +75,7 @@ public class PatientComponent extends Composite implements View {
             if(patient != null){
                 patientForm.setPatientToForm(patient);
                 window.center();
-                window.setCaption("Edit patient");
+                window.setCaption("Изменить данные о пациенте");
                 this.getUI().getUI().addWindow(window);
             }
         });
@@ -87,12 +88,12 @@ public class PatientComponent extends Composite implements View {
                 try {
                     patientController.deletePatient(patient);
                     updateList(patient, CrudOperations.DELETE);
-                    message = "Patient has been deleted";
+                    message = "Пациент был успешно удален";
                     notification = new Notification("", message);
                     notification.setPosition(Position.BOTTOM_RIGHT);
                     notification.show(Page.getCurrent());
                 } catch (Exception e){
-                    message = "Patient can't be deleted due to prescriptions assigned to him";
+                    message = "Пациент не может быть удален из-за рецептов, выписанных для него";
                     notification = new Notification("", message, Notification.Type.WARNING_MESSAGE);
                     notification.setPosition(Position.BOTTOM_RIGHT);
                     notification.show(Page.getCurrent());
@@ -104,15 +105,12 @@ public class PatientComponent extends Composite implements View {
     public void updateList(Patient patient, CrudOperations operation){
         switch (operation){
             case CREATE:
-//                provider.getItems().add(patient);
                 provider.refreshAll();
                 break;
             case UPDATE:
-//                provider.refreshItem(patient);
                 provider.refreshAll();
                 break;
             case DELETE:
-//                provider.getItems().remove(patient);
                 provider.refreshAll();
                 break;
         }

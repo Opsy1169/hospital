@@ -1,5 +1,7 @@
 package com.haulmont.testtask.entities;
 
+import com.sun.deploy.uitoolkit.impl.fx.ui.CertificateDialog;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -61,7 +63,7 @@ public class Patient {
 
     @Override
     public String toString() {
-        return  getFirstName() + " " + getSecondName() + " " + getThirdName();
+        return getSecondName() + " " + getFirstName().charAt(0) + ". " + getThirdName().charAt(0) + ".";
     }
 
     @Override
@@ -76,9 +78,5 @@ public class Patient {
                 Objects.equals(phoneNumber, patient.phoneNumber);
     }
 
-    @Override
-    public int hashCode() {
 
-        return Objects.hash(id, firstName, secondName, thirdName, phoneNumber);
-    }
 }

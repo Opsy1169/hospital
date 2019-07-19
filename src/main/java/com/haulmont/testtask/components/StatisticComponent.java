@@ -28,52 +28,33 @@ public class StatisticComponent extends Composite implements View {
     private Label valid = new Label();
     private static StatisticComponent statisticComponent = null;
     private HorizontalLayout mainLayout = new HorizontalLayout();
-//    private Grid<> doctorGrid = new Grid<>();
-    private TextField doctorGrid = new TextField("asdasd");
+
     private DoctorController doctorController = DoctorController.getInstance();
     ListDataProvider<Doctor> provider = DataProvider.ofCollection(doctorController.getAllDoctors());
 
 
     public StatisticComponent(){
-//        doctorGrid.setColumnOrder("secondName", "firstName",  "thirdName", "specialization");
-//        doctorGrid.removeColumn("id");
 
         mainLayout.addComponents(fullNameLayout, signedByDoctor, percentageOfTotal, percentageOfValid);
 
-        fullNameLayout.addComponents(new Label("Full name"), fullname);
+        fullNameLayout.addComponents(new Label("Имя:"), fullname);
 
-        signedByDoctor.addComponents(new Label("Signed by doctor"), signed);
+        signedByDoctor.addComponents(new Label("Подписано доктором:"), signed);
 
-        percentageOfTotal.addComponents(new Label("Percentage of total"), ofTotal);
+        percentageOfTotal.addComponents(new Label("Процент от общего числа:"), ofTotal);
 
-        percentageOfValid.addComponents(new Label("Number of valid by today"), valid);
+        percentageOfValid.addComponents(new Label("Действительны:"), valid);
         HorizontalLayout subcontent = new HorizontalLayout(fullNameLayout, signedByDoctor, percentageOfTotal, percentageOfValid);
-        fullNameLayout.setWidth("20%");
-        signedByDoctor.setWidth("20%");
-        percentageOfValid.setWidth("20%");
-        percentageOfTotal.setWidth("40%");
-//        subcontent.setSpacing(false);
-//        subcontent.setMargin(false);
+
         VerticalLayout mainContent = new VerticalLayout(subcontent);
         subcontent.setSizeFull();
         mainContent.setHeight("100%");
         mainContent.setWidth("1000px");
         setCompositionRoot(mainContent);
-//        fullNameLayout.setSizeFull();
-//        signedByDoctor.setSizeFull();
-//        percentageOfTotal.setSizeFull();
-//        valid.setSizeFull();
-////        mainLayout.setSizeFull();
-//        setCompositionRoot(mainLayout);
+
 
     }
 
-//    public static StatisticComponent getInstance(){
-//        if(statisticComponent == null){
-//            statisticComponent = new StatisticComponent();
-//        }
-//        return statisticComponent;
-//    }
 
     public void setDoctorToPanel(String fullname, int signed, int oftotal, int valid){
         this.fullname.setCaption(fullname);

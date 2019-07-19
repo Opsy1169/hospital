@@ -21,24 +21,24 @@ public class PatientForm extends Composite implements View {
 
     private Binder<Patient> binder = new Binder<>(Patient.class);
 
-    private TextField secondName = new TextField("Second name");
-    private TextField firstName = new TextField("First name");
-    private TextField patronymic = new TextField("Patronymic");
-    private TextField phoneNumber = new TextField("Phone number");
+    private TextField secondName = new TextField("Фамилия");
+    private TextField firstName = new TextField("Имя");
+    private TextField patronymic = new TextField("Отчество");
+    private TextField phoneNumber = new TextField("Номер телефона");
     private PatientComponent parent;
 
     private PatientController patientController = PatientController.getInstance();
-//    private DoctorController doctorController = DoctorController.getInstance();
-//    private PrescriptionController prescriptionController = PrescriptionController.getInstance();
 
-    private Button save = new Button("Save");
-    private Button cancel = new Button("Cancel");
+
+    private Button save = new Button("Ок");
+    private Button cancel = new Button("Отменить");
     public PatientForm(PatientComponent parent){
         this.parent = parent;
         InputMask.addTo(phoneNumber, "+9 999 999-99-99");
         FormLayout mainContent = new FormLayout();
         HorizontalLayout buttonLayout = new HorizontalLayout(save, cancel);
         mainContent.addComponents(secondName, firstName, patronymic, phoneNumber, buttonLayout);
+        mainContent.setComponentAlignment(buttonLayout, Alignment.MIDDLE_LEFT);
         initButtonListeners();
         setUpBinder();
         setCompositionRoot(mainContent);
@@ -55,40 +55,41 @@ public class PatientForm extends Composite implements View {
 
     private void setUpBinder(){
         binder.forField(secondName).withValidator(second -> ((second.length() >= 2) &&
-                (second.matches("[А-Яа-я]+") || second.matches("[a-zA-Z]+"))),
-                "Second name should be longer than two symbols and contain only Russian or English letters")
+                (second.trim().matches("[А-Яа-я]+") || second.trim().matches("[a-zA-Z]+"))),
+                "Фамилия должна быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Patient::getSecondName, Patient::setSecondName);
         binder.forField(firstName).withValidator(first -> ((first.length() >= 2) &&
-                (first.matches("[А-Яа-я]+") || first.matches("[a-zA-Z]+"))),
-                "First name should be longer than two symbols and contain only Russian or English letters")
+                (first.trim().matches("[А-Яа-я]+") || first.trim().matches("[a-zA-Z]+"))),
+                "Имя должно быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Patient::getFirstName, Patient::setFirstName);
         binder.forField(patronymic).withValidator(third -> ((third.length() >= 2) &&
-                (third.matches("[А-Яа-я]+") || third.matches("[a-zA-Z]+"))),
-                "Third name should be longer than two symbols and contain only Russian or English letters")
+                (third.trim().matches("[А-Яа-я]+") || third.trim().matches("[a-zA-Z]+"))),
+                "Отчество должно быть не короче двух символов и состоять только из букв русского или английского алфавитов")
                 .bind(Patient::getThirdName, Patient::setThirdName);
-        binder.forField(phoneNumber).withValidator(phone -> (phone.length() >= 16) && (!phone.contains("_")), "Wrong phone number format" ).bind(Patient::getPhoneNumber, Patient::setPhoneNumber);
+        binder.forField(phoneNumber).withValidator(phone -> (phone.length() >= 16) && (!phone.contains("_")), "Неверный формат номера" ).bind(Patient::getPhoneNumber, Patient::setPhoneNumber);
     }
 
     private void initButtonListeners(){
         save.addClickListener(event ->{
             BinderValidationStatus<Patient> status = binder.validate();
             if(status.hasErrors()){
-                Notification notif = new Notification("", "Some data is incorrect", Notification.Type.WARNING_MESSAGE);
+                Notification notif = new Notification("", "Некоторые данные некорректны", Notification.Type.WARNING_MESSAGE);
                 notif.setPosition(Position.BOTTOM_RIGHT);
                 notif.show(Page.getCurrent());
                 return;
             }
 
             Patient patient = binder.getBean();
+            patient = trimPatientFields(patient);
             boolean a = patient.getFirstName().matches("[а-яА-я]+");
             String message = "";
             if(patient.getId() == 0){
                 patientController.addPatient(patient);
-                message = "New patient has been added";
+                message = "Новый пациент был успешно добавлен";
                 parent.updateList(patient, CrudOperations.CREATE);
             }else{
                 patientController.updatePatient(patient);
-                message = "The patient has been updated";
+                message = "Пациент был успешно обновлен";
                 parent.updateList(patient, CrudOperations.UPDATE);
             }
             Notification notif = new Notification("", message);
@@ -105,5 +106,12 @@ public class PatientForm extends Composite implements View {
             window.close();
 
         });
+    }
+
+    private Patient trimPatientFields(Patient patient){
+        patient.setFirstName(patient.getFirstName().trim());
+        patient.setSecondName(patient.getSecondName().trim());
+        patient.setThirdName(patient.getThirdName().trim());
+        return patient;
     }
 }
