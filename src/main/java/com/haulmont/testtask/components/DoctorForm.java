@@ -84,7 +84,7 @@ public class DoctorForm extends Composite implements View {
         save.addClickListener(event ->{
             Doctor doctor = binder.getBean();
             BinderValidationStatus status = binder.validate();
-            doctor = trimDoctorFields(doctor);
+
 
             if(status.hasErrors()){
                 Notification notif = new Notification("", "Некоторые данные некорректны", Notification.Type.WARNING_MESSAGE);
@@ -92,6 +92,7 @@ public class DoctorForm extends Composite implements View {
                 notif.show(Page.getCurrent());
                 return;
             }
+            doctor = trimDoctorFields(doctor);
             String message = "";
             if(doctor.getId() == 0) {
                 doctorController.addDoctor(doctor);
