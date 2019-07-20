@@ -28,7 +28,7 @@ public class DoctorComponent extends Composite implements View {
     private Button add = new Button("Добавить");
     private Button edit = new Button("Изменить");
     private Button delete = new Button("Удалить");
-    private Button showStatisticButton = new Button("Статистика");
+    private Button showStatisticButton = new Button("Показать статистику");
     private Window subWindow = new Window("");
     private Window statisticSubWindow = new Window("Статистика");
     private StatisticComponent statisticLayout = new StatisticComponent();
