@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class DoctorComponent extends Composite implements View {
     private Grid<Doctor> doctorGrid = new Grid<>();
     private Button add = new Button("Добавить");
-    private Button delete = new Button("Изменить");
-    private Button edit = new Button("Удалить");
+    private Button edit = new Button("Изменить");
+    private Button delete = new Button("Удалить");
     private Button showStatisticButton = new Button("Статистика");
     private Window subWindow = new Window("");
     private Window statisticSubWindow = new Window("Статистика");
@@ -48,7 +48,7 @@ public class DoctorComponent extends Composite implements View {
         doctorGrid.addColumn(Doctor::getThirdName).setCaption("Отчество");
         doctorGrid.addColumn(Doctor::getSpecialization).setCaption("Специализация");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit, showStatisticButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(add, edit, delete,  showStatisticButton);
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, doctorGrid);
 
         mainContent.setHeight("100%");

@@ -24,8 +24,8 @@ public class PrescriptionComponent extends Composite implements View {
     private Grid<Prescription> prescriptionGrid = new Grid<>();
     private Window subWindow = new Window("");
     private Button add = new Button("Добавить");
-    private Button delete = new Button("Изменить");
-    private Button edit = new Button("Удалить");
+    private Button edit = new Button("Изменить");
+    private Button delete = new Button("Удалить");
     private ComboBox<Patient> patientFilter = new ComboBox<>("Фильтр по пациенту");
     private ComboBox<Priority> priorityFilter = new ComboBox<>("Фильтр по приоритету");
     private TextField descriptionFilter = new TextField("Фильтр по описанию");
@@ -51,7 +51,7 @@ public class PrescriptionComponent extends Composite implements View {
         prescriptionGrid.addColumn(Prescription::getValidityInDays).setCaption("Срок действия");
         prescriptionGrid.addColumn(Prescription::getPriority).setCaption("Приоритет");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout( add, delete, edit);
+        HorizontalLayout buttonLayout = new HorizontalLayout( add, edit,  delete);
         HorizontalLayout filterLayout = new HorizontalLayout(patientFilter, priorityFilter, descriptionFilter, applyFilterButton);
         filterLayout.setComponentAlignment(applyFilterButton, Alignment.BOTTOM_CENTER);
         HorizontalLayout headerLayout = new HorizontalLayout(filterLayout, buttonLayout);

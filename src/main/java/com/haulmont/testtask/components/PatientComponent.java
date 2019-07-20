@@ -21,8 +21,8 @@ public class PatientComponent extends Composite implements View {
     private Grid<Patient> patientGrid = new Grid<>();
     private Window window = new Window("");
     Button add = new Button("Добавить");
-    Button delete = new Button("Изменить");
-    Button edit = new Button("Удалить");
+    Button edit = new Button("Изменить");
+    Button delete = new Button("Удалить");
     PatientForm patientForm = new PatientForm(this);
 
     private PatientController patientController = PatientController.getInstance();
@@ -35,7 +35,7 @@ public class PatientComponent extends Composite implements View {
         patientGrid.addColumn(Patient::getThirdName).setCaption("Отчество");
         patientGrid.addColumn(Patient::getPhoneNumber).setCaption("Номер телефона");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(add, delete, edit);
+        HorizontalLayout buttonLayout = new HorizontalLayout(add, edit, delete);
 
         VerticalLayout mainContent = new VerticalLayout(buttonLayout, patientGrid);
         patientGrid.setSizeFull();
